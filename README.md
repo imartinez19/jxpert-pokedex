@@ -1,2 +1,2 @@
-# PROYECTO DANIEL GARCÍA
+# PROYECTO IVAN & DANI
 # jxpert-pokedex
