@@ -2,4 +2,4 @@
 
 Un proyecto de prueba para el curso de jxpert
 
-prueba
+prueba2
