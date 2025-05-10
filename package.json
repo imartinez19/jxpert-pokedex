@@ -12,8 +12,7 @@
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
-    "*.{ts,tsx}": "eslint",
-    "*": "prettier --ignore-unknown --write"
+    "**/*.{ts,tsx,js,jsx}": ["eslint --fix", "prettier  --write"]
   },
   "engines": {
     "node": "22"
