@@ -32,6 +32,6 @@ jobs:
       run: yarn
       
     - name: Run the tests
-      run: yarn test --if-present
+      run: yarn test
 
 
