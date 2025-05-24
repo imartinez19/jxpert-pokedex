@@ -125,7 +125,7 @@ describe("Carga de pokémon", () => {
   });
 });
 
-describe.only("Filtros y busqueda", () => {
+describe("Filtros y busqueda", () => {
   const bulbasaur = {
     name: "bulbasaur",
     sprites: {
@@ -206,6 +206,86 @@ describe.only("Filtros y busqueda", () => {
       },
     ],
   };
+  const chikorita = {
+    name: "chikorita",
+    sprites: {
+      other: {
+        "official-artwork": {
+          front_default:
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+          front_shiny:
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/1.png",
+        },
+      },
+    },
+    types: [
+      {
+        slot: 1,
+        type: {
+          name: "grass",
+          url: "https://pokeapi.co/api/v2/type/12/",
+        },
+      },
+      {
+        slot: 2,
+        type: {
+          name: "poison",
+          url: "https://pokeapi.co/api/v2/type/4/",
+        },
+      },
+    ],
+    id: 152,
+    stats: [
+      {
+        base_stat: 45,
+        effort: 0,
+        stat: {
+          name: "hp",
+          url: "https://pokeapi.co/api/v2/stat/1/",
+        },
+      },
+      {
+        base_stat: 49,
+        effort: 0,
+        stat: {
+          name: "attack",
+          url: "https://pokeapi.co/api/v2/stat/2/",
+        },
+      },
+      {
+        base_stat: 49,
+        effort: 0,
+        stat: {
+          name: "defense",
+          url: "https://pokeapi.co/api/v2/stat/3/",
+        },
+      },
+      {
+        base_stat: 65,
+        effort: 1,
+        stat: {
+          name: "special-attack",
+          url: "https://pokeapi.co/api/v2/stat/4/",
+        },
+      },
+      {
+        base_stat: 65,
+        effort: 0,
+        stat: {
+          name: "special-defense",
+          url: "https://pokeapi.co/api/v2/stat/5/",
+        },
+      },
+      {
+        base_stat: 45,
+        effort: 0,
+        stat: {
+          name: "speed",
+          url: "https://pokeapi.co/api/v2/stat/6/",
+        },
+      },
+    ],
+  };
   beforeEach(() => {
     const mockFetch = vi.fn();
     globalThis.fetch = mockFetch;
@@ -225,6 +305,21 @@ describe.only("Filtros y busqueda", () => {
       .mockResolvedValueOnce({
         ok: true,
         json: async () => bulbasaur,
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          results: [
+            {
+              name: "chikorita",
+              url: "https://pokeapi.co/api/v2/pokemon/1/",
+            },
+          ],
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => chikorita,
       });
   });
 
@@ -255,6 +350,18 @@ describe.only("Filtros y busqueda", () => {
     await userEvent.keyboard(textoBusqueda);
     const pokemonCard = await screen.findByText("bulbasaur");
 
+    expect(pokemonCard).toBeInTheDocument();
+  });
+
+  test("Deberia filtrar por region", async () => {
+    render(<App />);
+
+    const filterButton = await screen.findByLabelText("Select reg");
+    await userEvent.click(filterButton);
+    const johtoButton = await screen.findByRole("radio", { name: "johto" });
+    await userEvent.click(johtoButton);
+
+    const pokemonCard = await screen.findByText("chikorita");
     expect(pokemonCard).toBeInTheDocument();
   });
 });
