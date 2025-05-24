@@ -116,7 +116,9 @@ describe("Carga de pokémon", () => {
   test("debería mostrar correctamente los datos de la tarjeta", async () => {
     render(<App />);
 
-    const pokemonName = await screen.findByRole("heading", { name: "pikachu" });
+    const pokemonName = await screen.findByRole("heading", {
+      name: bulbasaur.name,
+    });
 
     expect(pokemonName).toBeInTheDocument();
   });
