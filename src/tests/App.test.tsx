@@ -12451,7 +12451,7 @@ describe("Filtros y busqueda", () => {
     expect(pokemonCard).toBeInTheDocument();
   });
 
-  test.only("Debería ordenar correctamente", async () => {
+  test("Debería ordenar correctamente", async () => {
     const mockFetch = vi.fn();
     globalThis.fetch = mockFetch;
     mockFetch
