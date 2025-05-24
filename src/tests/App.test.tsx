@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { describe, expect, test } from "vitest";
 import { App } from "../App";
 
@@ -121,5 +122,139 @@ describe("Carga de pokémon", () => {
     });
 
     expect(pokemonName).toBeInTheDocument();
+  });
+});
+
+describe.only("Filtros y busqueda", () => {
+  const bulbasaur = {
+    name: "bulbasaur",
+    sprites: {
+      other: {
+        "official-artwork": {
+          front_default:
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+          front_shiny:
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/1.png",
+        },
+      },
+    },
+    types: [
+      {
+        slot: 1,
+        type: {
+          name: "grass",
+          url: "https://pokeapi.co/api/v2/type/12/",
+        },
+      },
+      {
+        slot: 2,
+        type: {
+          name: "poison",
+          url: "https://pokeapi.co/api/v2/type/4/",
+        },
+      },
+    ],
+    id: 1,
+    stats: [
+      {
+        base_stat: 45,
+        effort: 0,
+        stat: {
+          name: "hp",
+          url: "https://pokeapi.co/api/v2/stat/1/",
+        },
+      },
+      {
+        base_stat: 49,
+        effort: 0,
+        stat: {
+          name: "attack",
+          url: "https://pokeapi.co/api/v2/stat/2/",
+        },
+      },
+      {
+        base_stat: 49,
+        effort: 0,
+        stat: {
+          name: "defense",
+          url: "https://pokeapi.co/api/v2/stat/3/",
+        },
+      },
+      {
+        base_stat: 65,
+        effort: 1,
+        stat: {
+          name: "special-attack",
+          url: "https://pokeapi.co/api/v2/stat/4/",
+        },
+      },
+      {
+        base_stat: 65,
+        effort: 0,
+        stat: {
+          name: "special-defense",
+          url: "https://pokeapi.co/api/v2/stat/5/",
+        },
+      },
+      {
+        base_stat: 45,
+        effort: 0,
+        stat: {
+          name: "speed",
+          url: "https://pokeapi.co/api/v2/stat/6/",
+        },
+      },
+    ],
+  };
+  beforeEach(() => {
+    const mockFetch = vi.fn();
+    globalThis.fetch = mockFetch;
+
+    mockFetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          results: [
+            {
+              name: "bulbasaur",
+              url: "https://pokeapi.co/api/v2/pokemon/1/",
+            },
+          ],
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => bulbasaur,
+      });
+  });
+
+  test("Debería mostrar un mensaje si no encuentra ningún pokémon", async () => {
+    render(<App />);
+
+    const searchField = await screen.findByPlaceholderText(
+      "Search a Pokémon...",
+    );
+    const textoBusqueda = "123asdf";
+    await userEvent.click(searchField);
+    await userEvent.keyboard(textoBusqueda);
+    const noResultsText = await screen.findByText(`No results for`, {
+      exact: false,
+    });
+
+    expect(noResultsText).toBeInTheDocument();
+  });
+
+  test("Debería mostrar correctamente un pokémon buscado", async () => {
+    render(<App />);
+
+    const searchField = await screen.findByPlaceholderText(
+      "Search a Pokémon...",
+    );
+    const textoBusqueda = "bulb";
+    await userEvent.click(searchField);
+    await userEvent.keyboard(textoBusqueda);
+    const pokemonCard = await screen.findByText("bulbasaur");
+
+    expect(pokemonCard).toBeInTheDocument();
   });
 });
