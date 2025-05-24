@@ -30,6 +30,9 @@ jobs:
         
     - name: Install dependencies
       run: yarn
+       
+    - name: Run eslint
+      run: yarn lint
       
     - name: Run the tests
       run: yarn test
