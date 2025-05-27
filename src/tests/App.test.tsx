@@ -12385,12 +12385,20 @@ describe("Filtros y busqueda", () => {
               name: "bulbasaur",
               url: "https://pokeapi.co/api/v2/pokemon/1/",
             },
+            {
+              name: "ivysaur",
+              url: "https://pokeapi.co/api/v2/pokemon/1/",
+            },
           ],
         }),
       })
       .mockResolvedValueOnce({
         ok: true,
         json: async () => bulbasaur,
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ivysaur,
       })
       .mockResolvedValueOnce({
         ok: true,
@@ -12452,42 +12460,25 @@ describe("Filtros y busqueda", () => {
   });
 
   test("Debería ordenar correctamente", async () => {
-    const mockFetch = vi.fn();
-    globalThis.fetch = mockFetch;
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          results: [
-            {
-              name: "bulbasaur",
-              url: "https://pokeapi.co/api/v2/pokemon/1/",
-            },
-            {
-              name: "ivysaur",
-              url: "https://pokeapi.co/api/v2/pokemon/1/",
-            },
-          ],
-        }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => bulbasaur,
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ivysaur,
-      });
-
+    const camposABuscar = [
+      "Health points",
+      "Attack",
+      "Defense",
+      "Special attack",
+      "Special defense",
+      "Speed",
+    ];
     render(<App />);
 
     const sortButton = await screen.findByLabelText("Sort by");
     await userEvent.click(sortButton);
-    const sortHpButton = screen.getByRole("radio", { name: "Health points" });
-    await userEvent.click(sortHpButton);
-    const bulbasaurCard = screen.getByText("bulbasaur");
-    const ivysaurCard = screen.getByText("ivysaur");
 
-    expect(bulbasaurCard.compareDocumentPosition(ivysaurCard)).toBe(2);
+    camposABuscar.forEach(async (campo) => {
+      const sortHpButton = screen.getByRole("radio", { name: campo });
+      await userEvent.click(sortHpButton);
+      const bulbasaurCard = screen.getByText("bulbasaur");
+      const ivysaurCard = screen.getByText("ivysaur");
+      expect(bulbasaurCard.compareDocumentPosition(ivysaurCard)).toBe(2);
+    });
   });
 });
