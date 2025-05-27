@@ -12463,8 +12463,8 @@ describe("Filtros y busqueda", () => {
     ["Health points", 2],
     ["Attack", 2],
     ["Defense", 2],
-    ["Special attack", 4],
-    ["Special defense", 4],
+    ["Special attack", 2],
+    ["Special defense", 2],
     ["Speed", 2],
     ["Default", 4],
   ])(

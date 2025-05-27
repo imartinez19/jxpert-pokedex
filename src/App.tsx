@@ -453,16 +453,16 @@ export const App = () => {
                   aria-label="Special attack"
                   tabIndex={0}
                   className={`sort__pill ${
-                    sorting === "specialAttack" ? "active" : ""
+                    sorting === "special-attack" ? "active" : ""
                   }`}
-                  aria-checked={sorting === "specialAttack"}
+                  aria-checked={sorting === "special-attack"}
                   onClick={() => {
-                    setSort("specialAttack");
+                    setSort("special-attack");
                     setShowSort(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSort("specialAttack");
+                      setSort("special-attack");
                       setShowSort(false);
                     }
                   }}
@@ -475,16 +475,16 @@ export const App = () => {
                   aria-label="Special defense"
                   tabIndex={0}
                   className={`sort__pill ${
-                    sorting === "specialDefense" ? "active" : ""
+                    sorting === "special-defense" ? "active" : ""
                   }`}
-                  aria-checked={sorting === "specialDefense"}
+                  aria-checked={sorting === "special-defense"}
                   onClick={() => {
-                    setSort("specialDefense");
+                    setSort("special-defense");
                     setShowSort(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSort("specialDefense");
+                      setSort("special-defense");
                       setShowSort(false);
                     }
                   }}
