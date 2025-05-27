@@ -12459,26 +12459,29 @@ describe("Filtros y busqueda", () => {
     expect(pokemonCard).toBeInTheDocument();
   });
 
-  test("Debería ordenar correctamente", async () => {
-    const camposABuscar = [
-      "Health points",
-      "Attack",
-      "Defense",
-      "Special attack",
-      "Special defense",
-      "Speed",
-    ];
-    render(<App />);
+  test.each([
+    ["Health points", 2],
+    ["Attack", 2],
+    ["Defense", 2],
+    ["Special attack", 4],
+    ["Special defense", 4],
+    ["Speed", 2],
+    ["Default", 4],
+  ])(
+    "Debería ordenar correctamente el filtro por %s",
+    async (campo, resultado) => {
+      render(<App />);
 
-    const sortButton = await screen.findByLabelText("Sort by");
-    await userEvent.click(sortButton);
-
-    camposABuscar.forEach(async (campo) => {
+      const sortButton = await screen.findByLabelText("Sort by");
+      await userEvent.click(sortButton);
       const sortHpButton = screen.getByRole("radio", { name: campo });
       await userEvent.click(sortHpButton);
       const bulbasaurCard = screen.getByText("bulbasaur");
       const ivysaurCard = screen.getByText("ivysaur");
-      expect(bulbasaurCard.compareDocumentPosition(ivysaurCard)).toBe(2);
-    });
-  });
+
+      expect(bulbasaurCard.compareDocumentPosition(ivysaurCard)).toBe(
+        resultado,
+      );
+    },
+  );
 });
