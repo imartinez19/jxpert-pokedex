@@ -800,12 +800,21 @@ describe("Filtros y busqueda", () => {
     expect(pokemonCard).toBeInTheDocument();
   });
 
-  test("Deberia filtrar por region", async () => {
+  test.each([
+    ["johto"],
+    ["hoenn"],
+    ["sinnoh"],
+    ["unova"],
+    ["kalos"],
+    ["alola"],
+    ["galar"],
+    ["paldea"],
+  ])("Deberia filtrar por la region de %s", async (region) => {
     render(<App />);
 
     const filterButton = await screen.findByLabelText("Select reg");
     await userEvent.click(filterButton);
-    const johtoButton = screen.getByRole("radio", { name: "johto" });
+    const johtoButton = screen.getByRole("radio", { name: region });
     await userEvent.click(johtoButton);
 
     const pokemonCard = screen.getByText("chikorita");
