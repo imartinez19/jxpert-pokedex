@@ -236,6 +236,14 @@ describe("Carga de pokémon", () => {
 
     expect(pokemonName).toBeInTheDocument();
   });
+
+  test("debería mostrar el skeleton antes de terminar la carga", () => {
+    render(<App />);
+
+    const skeleton = screen.getAllByTestId("card-placeholder");
+
+    expect(skeleton).toHaveLength(6);
+  });
 });
 
 describe("Filtros y busqueda", () => {
