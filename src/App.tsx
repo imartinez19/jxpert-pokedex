@@ -77,12 +77,14 @@ const LOADING_PLACEHOLDER_LENGTH: number = 6;
 const MAX_STAT_VALUE: string = "255";
 const NUMBER_LENGTH: number = 3;
 
+const API_BASE_URL = "https://pokeapi.co/api/v2";
+
 export const App = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [filtering, setFiltering] = useState<boolean>(false);
   const [showListError, setShowListError] = useState<boolean>(false);
   const [pokemons, setPokemons] = useState<any>([]);
-  const [pokemonsDetails, setPokemonDetails] = useState<any>([]);
+  const [filteredPokemons, setFilteredPokemons] = useState<any>([]);
   const [search, setSearch] = useState<string>("");
   const [pokemonRegion, setPokemonRegion] = useState<Region>(REGIONS.KANTO);
   const [showRegions, setShowRegions] = useState<boolean>(false);
@@ -94,31 +96,30 @@ export const App = () => {
       setLoading(true);
       setFiltering(true);
 
-      const { results: pokemons }: any = await fetch(
-        `https://pokeapi.co/api/v2/pokemon?offset=${pokemonRegion.start}&limit=${pokemonRegion.end}`,
+      let pokemonsDetails;
+      await fetch(
+        `${API_BASE_URL}/pokemon?offset=${pokemonRegion.start}&limit=${pokemonRegion.end}`,
       )
-        .then((pokemons) => pokemons.json())
+        .then(async (pokemons) => {
+          const pokemonsJSON = await pokemons.json();
+          pokemonsDetails = await Promise.all(
+            pokemonsJSON.results.map(
+              async ({ url }) =>
+                await fetch(url)
+                  .then((pokemonsDetails) => pokemonsDetails.json())
+                  .catch((error) => {
+                    console.log("MI ERROR ===>", error);
+                  }),
+            ),
+          );
+          setPokemons(pokemonsDetails);
+          setFilteredPokemons(pokemonsDetails);
+        })
         .catch((error) => {
           setShowListError(true);
           console.log("MI ERROR ===>", error);
-          return {};
         });
 
-      if (pokemons === undefined) {
-        return;
-      }
-      const pokemonsDetails = await Promise.all(
-        pokemons.map(
-          async ({ url }) =>
-            await fetch(url)
-              .then((pokemonsDetails) => pokemonsDetails.json())
-              .catch((error) => {
-                console.log("MI ERROR ===>", error);
-              }),
-        ),
-      );
-      setPokemons(pokemonsDetails);
-      setPokemonDetails(pokemonsDetails);
       setLoading(false);
     };
     getPokemonsDetails();
@@ -128,7 +129,7 @@ export const App = () => {
    * Filters results based on input query term.
    */
   useEffect(() => {
-    setPokemonDetails(
+    setFilteredPokemons(
       pokemons.filter(
         (filteredPokemons) =>
           filteredPokemons.name.includes(search.toLowerCase()) ||
@@ -145,13 +146,13 @@ export const App = () => {
    */
   useEffect(() => {
     if (sortBy === DEFAULT_SORT) {
-      setPokemonDetails((pokemonDetails) =>
+      setFilteredPokemons((pokemonDetails) =>
         [...pokemonDetails].sort((firstPokemon, secondPokemon) => {
           return firstPokemon.id - secondPokemon.id;
         }),
       );
     } else {
-      setPokemonDetails((pokemonDetails) =>
+      setFilteredPokemons((pokemonDetails) =>
         [...pokemonDetails].sort((firstPokemon, secondPokemon) => {
           const firstPokemonStat = firstPokemon.stats.find(
             (stat) => stat.stat.name === sortBy,
@@ -163,7 +164,7 @@ export const App = () => {
         }),
       );
     }
-  }, [pokemonsDetails[0]?.id, sortBy]);
+  }, [filteredPokemons[0]?.id, sortBy]);
 
   return (
     <div className="layout">
@@ -494,9 +495,9 @@ export const App = () => {
             </div>
           )}
           {/* Prints cards */}
-          {!filtering && !loading && pokemonsDetails.length > 0 && (
+          {!filtering && !loading && filteredPokemons.length > 0 && (
             <ul className="grid">
-              {pokemonsDetails.map((res) => {
+              {filteredPokemons.map((res) => {
                 const customStyles: any = {
                   "--color-type": `var(--color-${res.types[0].type.name}`,
                 };
@@ -623,7 +624,7 @@ export const App = () => {
             </ul>
           )}
         </section>
-        {!loading && pokemonsDetails.length === 0 && (
+        {!loading && filteredPokemons.length === 0 && (
           <p className="noresults">No results for "{search}"</p>
         )}
         {showListError && (
