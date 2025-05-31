@@ -22,9 +22,7 @@ import pokeball from "./assets/pokeball.svg";
 type Icons = {
   [key: string]: string;
 };
-/**
- *  Iconos de los tipos de Pokémon
- */
+
 const TYPE_ICONS: Icons = {
   bug,
   dark,
@@ -101,9 +99,6 @@ export const App = () => {
   const [sortBy, setSortBy] = useState<string>("default");
 
   useEffect(() => {
-    /**
-     *  Carga de datos de Pokémons y gestión de estado de cargando.
-     */
     const getPokemonsDetails = async () => {
       setLoading(true);
       setFiltering(true);
@@ -140,31 +135,31 @@ export const App = () => {
         regionStart = KANTO.start;
         regionEnd = KANTO.end;
       }
-      const { results }: any = await fetch(
+      const { results: pokemons }: any = await fetch(
         `https://pokeapi.co/api/v2/pokemon?offset=${regionStart}&limit=${regionEnd}`,
       )
-        .then((res) => res.json())
-        .catch((err) => {
+        .then((pokemons) => pokemons.json())
+        .catch((error) => {
           setShowListError(true);
-          console.log("MI ERROR ===>", err);
+          console.log("MI ERROR ===>", error);
           return {};
         });
 
-      if (results === undefined) {
+      if (pokemons === undefined) {
         return;
       }
-      const result = await Promise.all(
-        results.map(
+      const pokemonsDetails = await Promise.all(
+        pokemons.map(
           async ({ url }) =>
             await fetch(url)
-              .then((res) => res.json())
-              .catch((err) => {
-                console.log("MI ERROR ===>", err);
+              .then((pokemonsDetails) => pokemonsDetails.json())
+              .catch((error) => {
+                console.log("MI ERROR ===>", error);
               }),
         ),
       );
-      setPokemons(result);
-      setPokemonDetails(result);
+      setPokemons(pokemonsDetails);
+      setPokemonDetails(pokemonsDetails);
       setLoading(false);
     };
     getPokemonsDetails();
@@ -176,9 +171,9 @@ export const App = () => {
   useEffect(() => {
     setPokemonDetails(
       pokemons.filter(
-        (res) =>
-          res.name.includes(search.toLowerCase()) ||
-          !!res.types.find((type) =>
+        (filteredPokemons) =>
+          filteredPokemons.name.includes(search.toLowerCase()) ||
+          !!filteredPokemons.types.find((type) =>
             type.type.name.startsWith(search.toLowerCase()),
           ),
       ),
