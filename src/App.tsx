@@ -19,10 +19,13 @@ import steel from "./assets/steel.svg";
 import water from "./assets/water.svg";
 import pokeball from "./assets/pokeball.svg";
 
+type Icons = {
+  [key: string]: string;
+};
 /**
  *  Iconos de los tipos de Pokémon
  */
-const TYPE_ICONS: any = {
+const TYPE_ICONS: Icons = {
   bug,
   dark,
   dragon,
@@ -55,7 +58,7 @@ const ALOLA: Region = { name: "alola", start: 721, end: 809 };
 const GALAR: Region = { name: "galar", start: 809, end: 905 };
 const PALDEA: Region = { name: "paldea", start: 905, end: 1025 };
 
-const REGIONS = [
+const REGIONS: string[] = [
   KANTO.name,
   JOHTO.name,
   HOENN.name,
@@ -66,7 +69,12 @@ const REGIONS = [
   GALAR.name,
   PALDEA.name,
 ];
-const STATS = {
+
+type Stats = {
+  [key: string]: string;
+};
+
+const STATS: Stats = {
   HEALTH_POINTS: "hp",
   ATTACK: "attack",
   DEFENSE: "defense",
@@ -75,6 +83,7 @@ const STATS = {
   SPEED: "speed",
 };
 const DEFAULT_SORT = "default";
+
 export const App = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [filtering, setFiltering] = useState<boolean>(false);
@@ -424,16 +433,16 @@ export const App = () => {
                   aria-label="Default"
                   tabIndex={0}
                   className={`sort__pill ${
-                    sortBy === "default" ? "active" : ""
+                    sortBy === DEFAULT_SORT ? "active" : ""
                   }`}
-                  aria-checked={sortBy === "default"}
+                  aria-checked={sortBy === DEFAULT_SORT}
                   onClick={() => {
-                    setSortBy("default");
+                    setSortBy(DEFAULT_SORT);
                     setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSortBy("default");
+                      setSortBy(DEFAULT_SORT);
                       setShowSortingMenu(false);
                     }
                   }}
@@ -445,15 +454,15 @@ export const App = () => {
                   role="radio"
                   aria-label="Health points"
                   tabIndex={0}
-                  className={`sort__pill ${sortBy === "hp" ? "active" : ""}`}
-                  aria-checked={sortBy === "hp"}
+                  className={`sort__pill ${sortBy === STATS.HEALTH_POINTS ? "active" : ""}`}
+                  aria-checked={sortBy === STATS.HEALTH_POINTS}
                   onClick={() => {
-                    setSortBy("hp");
+                    setSortBy(STATS.HEALTH_POINTS);
                     setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSortBy("hp");
+                      setSortBy(STATS.HEALTH_POINTS);
                       setShowSortingMenu(false);
                     }
                   }}
@@ -466,16 +475,16 @@ export const App = () => {
                   aria-label="Attack"
                   tabIndex={0}
                   className={`sort__pill ${
-                    sortBy === "attack" ? "active" : ""
+                    sortBy === STATS.ATTACK ? "active" : ""
                   }`}
-                  aria-checked={sortBy === "attack"}
+                  aria-checked={sortBy === STATS.ATTACK}
                   onClick={() => {
-                    setSortBy("attack");
+                    setSortBy(STATS.ATTACK);
                     setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSortBy("attack");
+                      setSortBy(STATS.ATTACK);
                       setShowSortingMenu(false);
                     }
                   }}
@@ -488,16 +497,16 @@ export const App = () => {
                   aria-label="Defense"
                   tabIndex={0}
                   className={`sort__pill ${
-                    sortBy === "defense" ? "active" : ""
+                    sortBy === STATS.DEFENSE ? "active" : ""
                   }`}
-                  aria-checked={sortBy === "defense"}
+                  aria-checked={sortBy === STATS.DEFENSE}
                   onClick={() => {
-                    setSortBy("defense");
+                    setSortBy(STATS.DEFENSE);
                     setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSortBy("defense");
+                      setSortBy(STATS.DEFENSE);
                       setShowSortingMenu(false);
                     }
                   }}
@@ -509,16 +518,16 @@ export const App = () => {
                   aria-label="Special attack"
                   tabIndex={0}
                   className={`sort__pill ${
-                    sortBy === "special-attack" ? "active" : ""
+                    sortBy === STATS.SPECIAL_ATTACK ? "active" : ""
                   }`}
-                  aria-checked={sortBy === "special-attack"}
+                  aria-checked={sortBy === STATS.SPECIAL_ATTACK}
                   onClick={() => {
-                    setSortBy("special-attack");
+                    setSortBy(STATS.SPECIAL_ATTACK);
                     setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSortBy("special-attack");
+                      setSortBy(STATS.SPECIAL_ATTACK);
                       setShowSortingMenu(false);
                     }
                   }}
@@ -531,16 +540,16 @@ export const App = () => {
                   aria-label="Special defense"
                   tabIndex={0}
                   className={`sort__pill ${
-                    sortBy === "special-defense" ? "active" : ""
+                    sortBy === STATS.SPECIAL_DEFENSE ? "active" : ""
                   }`}
-                  aria-checked={sortBy === "special-defense"}
+                  aria-checked={sortBy === STATS.SPECIAL_DEFENSE}
                   onClick={() => {
-                    setSortBy("special-defense");
+                    setSortBy(STATS.SPECIAL_DEFENSE);
                     setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSortBy("special-defense");
+                      setSortBy(STATS.SPECIAL_DEFENSE);
                       setShowSortingMenu(false);
                     }
                   }}
@@ -551,15 +560,15 @@ export const App = () => {
                   role="radio"
                   aria-label="Speed"
                   tabIndex={0}
-                  className={`sort__pill ${sortBy === "speed" ? "active" : ""}`}
-                  aria-checked={sortBy === "speed"}
+                  className={`sort__pill ${sortBy === STATS.SPEED ? "active" : ""}`}
+                  aria-checked={sortBy === STATS.SPEED}
                   onClick={() => {
-                    setSortBy("speed");
+                    setSortBy(STATS.SPEED);
                     setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSortBy("speed");
+                      setSortBy(STATS.SPEED);
                       setShowSortingMenu(false);
                     }
                   }}
