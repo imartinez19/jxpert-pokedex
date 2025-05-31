@@ -45,28 +45,19 @@ const TYPE_ICONS: Icons = {
 };
 
 type Region = { name: string; start: number; end: number };
+type Regions = { [key: string]: Region };
 
-const KANTO: Region = { name: "kanto", start: 0, end: 151 };
-const JOHTO: Region = { name: "johto", start: 151, end: 251 };
-const HOENN: Region = { name: "hoenn", start: 251, end: 386 };
-const SINNOH: Region = { name: "sinnoh", start: 386, end: 494 };
-const UNOVA: Region = { name: "unova", start: 494, end: 649 };
-const KALOS: Region = { name: "kalos", start: 649, end: 721 };
-const ALOLA: Region = { name: "alola", start: 721, end: 809 };
-const GALAR: Region = { name: "galar", start: 809, end: 905 };
-const PALDEA: Region = { name: "paldea", start: 905, end: 1025 };
-
-const REGIONS: string[] = [
-  KANTO.name,
-  JOHTO.name,
-  HOENN.name,
-  SINNOH.name,
-  UNOVA.name,
-  KALOS.name,
-  ALOLA.name,
-  GALAR.name,
-  PALDEA.name,
-];
+const REGIONS: Regions = {
+  KANTO: { name: "kanto", start: 0, end: 151 },
+  JOHTO: { name: "johto", start: 151, end: 251 },
+  HOENN: { name: "hoenn", start: 251, end: 386 },
+  SINNOH: { name: "sinnoh", start: 386, end: 494 },
+  UNOVA: { name: "unova", start: 494, end: 649 },
+  KALOS: { name: "kalos", start: 649, end: 721 },
+  ALOLA: { name: "alola", start: 721, end: 809 },
+  GALAR: { name: "galar", start: 809, end: 905 },
+  PALDEA: { name: "paldea", start: 905, end: 1025 },
+};
 
 type Stats = {
   [key: string]: string;
@@ -93,7 +84,7 @@ export const App = () => {
   const [pokemons, setPokemons] = useState<any>([]);
   const [pokemonsDetails, setPokemonDetails] = useState<any>([]);
   const [search, setSearch] = useState<string>("");
-  const [pokemonRegion, setPokemonRegion] = useState<string>(KANTO.name);
+  const [pokemonRegion, setPokemonRegion] = useState<Region>(REGIONS.KANTO);
   const [showRegions, setShowRegions] = useState<boolean>(false);
   const [showSortingMenu, setShowSortingMenu] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("default");
@@ -103,40 +94,8 @@ export const App = () => {
       setLoading(true);
       setFiltering(true);
 
-      let regionStart, regionEnd;
-      if (pokemonRegion === KANTO.name) {
-        regionStart = KANTO.start;
-        regionEnd = KANTO.end;
-      } else if (pokemonRegion === JOHTO.name) {
-        regionStart = KANTO.start;
-        regionEnd = KANTO.end;
-      } else if (pokemonRegion === HOENN.name) {
-        regionStart = HOENN.start;
-        regionEnd = HOENN.end;
-      } else if (pokemonRegion === SINNOH.name) {
-        regionStart = SINNOH.start;
-        regionEnd = SINNOH.end;
-      } else if (pokemonRegion === UNOVA.name) {
-        regionStart = UNOVA.start;
-        regionEnd = UNOVA.end;
-      } else if (pokemonRegion === KALOS.name) {
-        regionStart = KALOS.start;
-        regionEnd = KALOS.end;
-      } else if (pokemonRegion === ALOLA.name) {
-        regionStart = ALOLA.start;
-        regionEnd = ALOLA.end;
-      } else if (pokemonRegion === GALAR.name) {
-        regionStart = GALAR.start;
-        regionEnd = GALAR.end;
-      } else if (pokemonRegion === PALDEA.name) {
-        regionStart = PALDEA.start;
-        regionEnd = PALDEA.end;
-      } else {
-        regionStart = KANTO.start;
-        regionEnd = KANTO.end;
-      }
       const { results: pokemons }: any = await fetch(
-        `https://pokeapi.co/api/v2/pokemon?offset=${regionStart}&limit=${regionEnd}`,
+        `https://pokeapi.co/api/v2/pokemon?offset=${pokemonRegion.start}&limit=${pokemonRegion.end}`,
       )
         .then((pokemons) => pokemons.json())
         .catch((error) => {
@@ -330,7 +289,7 @@ export const App = () => {
                 })
               }
             >
-              {pokemonRegion}
+              {pokemonRegion.name}
               <svg
                 width="16"
                 height="16"
@@ -360,25 +319,25 @@ export const App = () => {
               hidden={!showRegions}
               className={`dropdown__list ${!showRegions ? "hide" : ""}`}
             >
-              {REGIONS.map((key) => (
+              {Object.values(REGIONS).map((region) => (
                 <li
-                  key={key}
+                  key={region.name}
                   role="radio"
-                  aria-checked={pokemonRegion === key}
+                  aria-checked={pokemonRegion === region}
                   tabIndex={0}
-                  className={pokemonRegion === key ? "active" : ""}
+                  className={pokemonRegion === region ? "active" : ""}
                   onClick={() => {
-                    setPokemonRegion(key);
+                    setPokemonRegion(region);
                     setShowRegions(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setPokemonRegion(key);
+                      setPokemonRegion(region);
                       setShowRegions(false);
                     }
                   }}
                 >
-                  {key}
+                  {region.name}
                 </li>
               ))}
             </ol>
