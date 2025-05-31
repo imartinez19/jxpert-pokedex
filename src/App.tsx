@@ -22,7 +22,7 @@ import pokeball from "./assets/pokeball.svg";
 /**
  *  Iconos de los tipos de Pokémon
  */
-const icns: any = {
+const POKEMON_TYPE_ICONS: any = {
   bug,
   dark,
   dragon,
@@ -43,81 +43,89 @@ const icns: any = {
   water,
 };
 
-const regs = [
-  "kanto",
-  "johto",
-  "hoenn",
-  "sinnoh",
-  "unova",
-  "kalos",
-  "alola",
-  "galar",
-  "paldea",
+const KANTO = "kanto";
+const JOHTO = "johto";
+const HOENN = "hoenn";
+const SINNOH = "sinnoh";
+const UNOVA = "unova";
+const KALOS = "kalos";
+const ALOLA = "alola";
+const GALAR = "galar";
+const PALDEA = "paldea";
+
+const POKEMON_REGIONS = [
+  KANTO,
+  JOHTO,
+  HOENN,
+  SINNOH,
+  UNOVA,
+  KALOS,
+  ALOLA,
+  GALAR,
+  PALDEA,
 ];
 
 export const App = () => {
-  const [ldr, setLdr] = useState<any>(false);
-  const [fltr, setFltr] = useState<any>(false);
-  const [showListErr, setShowListErr] = useState<any>(false);
-  const [result, setResult] = useState<any>([]);
-  const [finalResult, setFinalResult] = useState<any>([]);
-  const [busqueda, setBusqueda] = useState<any>("");
-  const [reg, setreg] = useState<any>("kanto");
-  const [showregs, setShowregs] = useState<any>(false);
-  const [showSort, setShowSort] = useState<any>(false);
-  const [sorting, setSort] = useState<any>("default");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [filtering, setFiltering] = useState<boolean>(false);
+  const [showListError, setShowListError] = useState<boolean>(false);
+  const [pokemons, setPokemons] = useState<any>([]);
+  const [pokemonsDetails, setPokemonDetails] = useState<any>([]);
+  const [search, setSearch] = useState<string>("");
+  const [pokemonRegion, setPokemonRegion] = useState<string>(KANTO);
+  const [showRegions, setShowRegions] = useState<boolean>(false);
+  const [showSortingMenu, setShowSortingMenu] = useState<boolean>(false);
+  const [sortBy, setSortBy] = useState<string>("default");
 
   useEffect(() => {
     /**
      *  Carga de datos de Pokémons y gestión de estado de cargando.
      */
-    const getData = async () => {
-      setLdr(true);
-      setFltr(true);
+    const getPokemonsDetails = async () => {
+      setLoading(true);
+      setFiltering(true);
 
-      let regStart, regEnd;
-      if (reg === "kanto") {
-        regStart = 0;
-        regEnd = 151;
-      } else if (reg === "johto") {
-        regStart = 151;
-        regEnd = 251;
-      } else if (reg === "hoenn") {
-        regStart = 251;
-        regEnd = 386;
-      } else if (reg === "sinnoh") {
-        regStart = 386;
-        regEnd = 494;
-      } else if (reg === "unova") {
-        regStart = 494;
-        regEnd = 649;
-      } else if (reg === "kalos") {
-        regStart = 649;
-        regEnd = 721;
-      } else if (reg === "alola") {
-        regStart = 721;
-        regEnd = 809;
-      } else if (reg === "galar") {
-        regStart = 809;
-        regEnd = 905;
-      } else if (reg === "paldea") {
-        regStart = 905;
-        regEnd = 1025;
+      let regionStart, regionEnd;
+      if (pokemonRegion === KANTO) {
+        regionStart = 0;
+        regionEnd = 151;
+      } else if (pokemonRegion === JOHTO) {
+        regionStart = 151;
+        regionEnd = 251;
+      } else if (pokemonRegion === HOENN) {
+        regionStart = 251;
+        regionEnd = 386;
+      } else if (pokemonRegion === SINNOH) {
+        regionStart = 386;
+        regionEnd = 494;
+      } else if (pokemonRegion === UNOVA) {
+        regionStart = 494;
+        regionEnd = 649;
+      } else if (pokemonRegion === KALOS) {
+        regionStart = 649;
+        regionEnd = 721;
+      } else if (pokemonRegion === ALOLA) {
+        regionStart = 721;
+        regionEnd = 809;
+      } else if (pokemonRegion === GALAR) {
+        regionStart = 809;
+        regionEnd = 905;
+      } else if (pokemonRegion === PALDEA) {
+        regionStart = 905;
+        regionEnd = 1025;
       } else {
-        regStart = 0;
-        regEnd = 151;
+        regionStart = 0;
+        regionEnd = 151;
       }
       const { results }: any = await fetch(
-        `https://pokeapi.co/api/v2/pokemon?offset=${regStart}&limit=${regEnd}`,
+        `https://pokeapi.co/api/v2/pokemon?offset=${regionStart}&limit=${regionEnd}`,
       )
         .then((res) => res.json())
         .catch((err) => {
-          setShowListErr(true);
+          setShowListError(true);
           console.log("MI ERROR ===>", err);
           return {};
         });
-
-      console.log("@@@@@@@@@@@@@@@", results);
 
       if (results === undefined) {
         return;
@@ -132,34 +140,36 @@ export const App = () => {
               }),
         ),
       );
-      setResult(result);
-      setFinalResult(result);
-      setLdr(false);
+      setPokemons(result);
+      setPokemonDetails(result);
+      setLoading(false);
     };
-    getData();
-  }, [reg]);
+    getPokemonsDetails();
+  }, [pokemonRegion]);
+
   /**
    * Filters results based on input query term.
    */
   useEffect(() => {
-    setFinalResult(
-      result.filter(
+    setPokemonDetails(
+      pokemons.filter(
         (res) =>
-          res.name.includes(busqueda.toLowerCase()) ||
+          res.name.includes(search.toLowerCase()) ||
           !!res.types.find((type) =>
-            type.type.name.startsWith(busqueda.toLowerCase()),
+            type.type.name.startsWith(search.toLowerCase()),
           ),
       ),
     );
-    setFltr(false);
-  }, [result[0]?.id, busqueda]);
+    setFiltering(false);
+  }, [pokemons[0]?.id, search]);
+
   /**
    * Sorts results based on selected sorting criteria.
    */
   useEffect(() => {
-    if (sorting !== "default") {
-      if (sorting === "hp") {
-        setFinalResult((prev) =>
+    if (sortBy !== "default") {
+      if (sortBy === "hp") {
+        setPokemonDetails((prev) =>
           [...prev].sort((a, b) => {
             const aStat = a.stats.find((stat) => stat.stat.name === "hp");
             const bStat = b.stats.find((stat) => stat.stat.name === "hp");
@@ -167,8 +177,8 @@ export const App = () => {
           }),
         );
       }
-      if (sorting === "attack") {
-        setFinalResult((prev) =>
+      if (sortBy === "attack") {
+        setPokemonDetails((prev) =>
           [...prev].sort((a, b) => {
             const aStat = a.stats.find((stat) => stat.stat.name === "attack");
             const bStat = b.stats.find((stat) => stat.stat.name === "attack");
@@ -176,8 +186,8 @@ export const App = () => {
           }),
         );
       }
-      if (sorting === "defense") {
-        setFinalResult((prev) =>
+      if (sortBy === "defense") {
+        setPokemonDetails((prev) =>
           [...prev].sort((a, b) => {
             const aStat = a.stats.find((stat) => stat.stat.name === "defense");
             const bStat = b.stats.find((stat) => stat.stat.name === "defense");
@@ -185,8 +195,8 @@ export const App = () => {
           }),
         );
       }
-      if (sorting === "special-attack") {
-        setFinalResult((prev) =>
+      if (sortBy === "special-attack") {
+        setPokemonDetails((prev) =>
           [...prev].sort((a, b) => {
             const aStat = a.stats.find(
               (stat) => stat.stat.name === "special-attack",
@@ -198,8 +208,8 @@ export const App = () => {
           }),
         );
       }
-      if (sorting === "special-defense") {
-        setFinalResult((prev) =>
+      if (sortBy === "special-defense") {
+        setPokemonDetails((prev) =>
           [...prev].sort((a, b) => {
             const aStat = a.stats.find(
               (stat) => stat.stat.name === "special-defense",
@@ -211,8 +221,8 @@ export const App = () => {
           }),
         );
       }
-      if (sorting === "speed") {
-        setFinalResult((prev) =>
+      if (sortBy === "speed") {
+        setPokemonDetails((prev) =>
           [...prev].sort((a, b) => {
             const aStat = a.stats.find((stat) => stat.stat.name === "speed");
             const bStat = b.stats.find((stat) => stat.stat.name === "speed");
@@ -221,14 +231,14 @@ export const App = () => {
         );
       }
     }
-    if (sorting === "default") {
-      setFinalResult((prev) =>
+    if (sortBy === "default") {
+      setPokemonDetails((prev) =>
         [...prev].sort((a, b) => {
           return a.id - b.id;
         }),
       );
     }
-  }, [finalResult[0]?.id, sorting]);
+  }, [pokemonsDetails[0]?.id, sortBy]);
 
   return (
     <div className="layout">
@@ -265,8 +275,8 @@ export const App = () => {
           <input
             type="text"
             placeholder="Search a Pokémon..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
           {/* Shows regions */}
           <div className="dropdown">
@@ -275,18 +285,18 @@ export const App = () => {
               aria-haspopup="listbox"
               aria-controls="reg-list"
               aria-label="Select reg"
-              aria-expanded={showregs}
-              className={`dropdown__button ${showregs ? "active" : ""}`}
+              aria-expanded={showRegions}
+              className={`dropdown__button ${showRegions ? "active" : ""}`}
               onClick={() =>
-                setShowregs((prev) => {
-                  if (showSort) {
-                    setShowSort(false);
+                setShowRegions((prev) => {
+                  if (showSortingMenu) {
+                    setShowSortingMenu(false);
                   }
                   return !prev;
                 })
               }
             >
-              {reg}
+              {pokemonRegion}
               <svg
                 width="16"
                 height="16"
@@ -313,24 +323,24 @@ export const App = () => {
             <ol
               role="listbox"
               id="reg-list"
-              hidden={!showregs}
-              className={`dropdown__list ${!showregs ? "hide" : ""}`}
+              hidden={!showRegions}
+              className={`dropdown__list ${!showRegions ? "hide" : ""}`}
             >
-              {regs.map((key) => (
+              {POKEMON_REGIONS.map((key) => (
                 <li
                   key={key}
                   role="radio"
-                  aria-checked={reg === key}
+                  aria-checked={pokemonRegion === key}
                   tabIndex={0}
-                  className={reg === key ? "active" : ""}
+                  className={pokemonRegion === key ? "active" : ""}
                   onClick={() => {
-                    setreg(key);
-                    setShowregs(false);
+                    setPokemonRegion(key);
+                    setShowRegions(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setreg(key);
-                      setShowregs(false);
+                      setPokemonRegion(key);
+                      setShowRegions(false);
                     }
                   }}
                 >
@@ -345,11 +355,11 @@ export const App = () => {
             aria-haspopup="listbox"
             aria-controls="sort-list"
             aria-label="Sort by"
-            aria-expanded={showSort}
+            aria-expanded={showSortingMenu}
             className="sort__button"
             onClick={() =>
-              setShowSort((prev) => {
-                if (showregs) setShowregs(false);
+              setShowSortingMenu((prev) => {
+                if (showRegions) setShowRegions(false);
                 return !prev;
               })
             }
@@ -361,7 +371,9 @@ export const App = () => {
               viewBox="0 0 24 24"
               fill="none"
               stroke={
-                showSort ? "var(--color-accent)" : "var(--color-neutral-700)"
+                showSortingMenu
+                  ? "var(--color-accent)"
+                  : "var(--color-neutral-700)"
               }
               strokeWidth="2"
               strokeLinecap="round"
@@ -377,7 +389,7 @@ export const App = () => {
           </button>
 
           {/* Muestra el menú de ordenación */}
-          {showSort && (
+          {showSortingMenu && (
             <article className="sort__wrapper">
               <h3 className="sort__title">Sort by</h3>
               <div className="sort__items" role="listbox" id="sort-list">
@@ -386,17 +398,17 @@ export const App = () => {
                   aria-label="Default"
                   tabIndex={0}
                   className={`sort__pill ${
-                    sorting === "default" ? "active" : ""
+                    sortBy === "default" ? "active" : ""
                   }`}
-                  aria-checked={sorting === "default"}
+                  aria-checked={sortBy === "default"}
                   onClick={() => {
-                    setSort("default");
-                    setShowSort(false);
+                    setSortBy("default");
+                    setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSort("default");
-                      setShowSort(false);
+                      setSortBy("default");
+                      setShowSortingMenu(false);
                     }
                   }}
                 >
@@ -407,16 +419,16 @@ export const App = () => {
                   role="radio"
                   aria-label="Health points"
                   tabIndex={0}
-                  className={`sort__pill ${sorting === "hp" ? "active" : ""}`}
-                  aria-checked={sorting === "hp"}
+                  className={`sort__pill ${sortBy === "hp" ? "active" : ""}`}
+                  aria-checked={sortBy === "hp"}
                   onClick={() => {
-                    setSort("hp");
-                    setShowSort(false);
+                    setSortBy("hp");
+                    setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSort("hp");
-                      setShowSort(false);
+                      setSortBy("hp");
+                      setShowSortingMenu(false);
                     }
                   }}
                 >
@@ -428,17 +440,17 @@ export const App = () => {
                   aria-label="Attack"
                   tabIndex={0}
                   className={`sort__pill ${
-                    sorting === "attack" ? "active" : ""
+                    sortBy === "attack" ? "active" : ""
                   }`}
-                  aria-checked={sorting === "attack"}
+                  aria-checked={sortBy === "attack"}
                   onClick={() => {
-                    setSort("attack");
-                    setShowSort(false);
+                    setSortBy("attack");
+                    setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSort("attack");
-                      setShowSort(false);
+                      setSortBy("attack");
+                      setShowSortingMenu(false);
                     }
                   }}
                 >
@@ -450,17 +462,17 @@ export const App = () => {
                   aria-label="Defense"
                   tabIndex={0}
                   className={`sort__pill ${
-                    sorting === "defense" ? "active" : ""
+                    sortBy === "defense" ? "active" : ""
                   }`}
-                  aria-checked={sorting === "defense"}
+                  aria-checked={sortBy === "defense"}
                   onClick={() => {
-                    setSort("defense");
-                    setShowSort(false);
+                    setSortBy("defense");
+                    setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSort("defense");
-                      setShowSort(false);
+                      setSortBy("defense");
+                      setShowSortingMenu(false);
                     }
                   }}
                 >
@@ -471,17 +483,17 @@ export const App = () => {
                   aria-label="Special attack"
                   tabIndex={0}
                   className={`sort__pill ${
-                    sorting === "special-attack" ? "active" : ""
+                    sortBy === "special-attack" ? "active" : ""
                   }`}
-                  aria-checked={sorting === "special-attack"}
+                  aria-checked={sortBy === "special-attack"}
                   onClick={() => {
-                    setSort("special-attack");
-                    setShowSort(false);
+                    setSortBy("special-attack");
+                    setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSort("special-attack");
-                      setShowSort(false);
+                      setSortBy("special-attack");
+                      setShowSortingMenu(false);
                     }
                   }}
                 >
@@ -493,17 +505,17 @@ export const App = () => {
                   aria-label="Special defense"
                   tabIndex={0}
                   className={`sort__pill ${
-                    sorting === "special-defense" ? "active" : ""
+                    sortBy === "special-defense" ? "active" : ""
                   }`}
-                  aria-checked={sorting === "special-defense"}
+                  aria-checked={sortBy === "special-defense"}
                   onClick={() => {
-                    setSort("special-defense");
-                    setShowSort(false);
+                    setSortBy("special-defense");
+                    setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSort("special-defense");
-                      setShowSort(false);
+                      setSortBy("special-defense");
+                      setShowSortingMenu(false);
                     }
                   }}
                 >
@@ -513,18 +525,16 @@ export const App = () => {
                   role="radio"
                   aria-label="Speed"
                   tabIndex={0}
-                  className={`sort__pill ${
-                    sorting === "speed" ? "active" : ""
-                  }`}
-                  aria-checked={sorting === "speed"}
+                  className={`sort__pill ${sortBy === "speed" ? "active" : ""}`}
+                  aria-checked={sortBy === "speed"}
                   onClick={() => {
-                    setSort("speed");
-                    setShowSort(false);
+                    setSortBy("speed");
+                    setShowSortingMenu(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      setSort("speed");
-                      setShowSort(false);
+                      setSortBy("speed");
+                      setShowSortingMenu(false);
                     }
                   }}
                 >
@@ -538,7 +548,7 @@ export const App = () => {
 
         {/* Muestra cartas cargando */}
         <section>
-          {(ldr || fltr) && !showListErr && (
+          {(loading || filtering) && !showListError && (
             <div className="grid" aria-hidden="true">
               {Array.from({ length: 6 }, (_, index) => {
                 return (
@@ -556,9 +566,9 @@ export const App = () => {
             </div>
           )}
           {/* Prints cards */}
-          {!fltr && !ldr && finalResult.length > 0 && (
+          {!filtering && !loading && pokemonsDetails.length > 0 && (
             <ul className="grid">
-              {finalResult.map((res) => {
+              {pokemonsDetails.map((res) => {
                 const customStyles: any = {
                   "--color-type": `var(--color-${res.types[0].type.name}`,
                 };
@@ -572,13 +582,13 @@ export const App = () => {
                         </div>
                         <div className="card__tag">
                           <img
-                            src={icns[res.types[0].type.name]}
+                            src={POKEMON_TYPE_ICONS[res.types[0].type.name]}
                             className="card__type"
                             alt={`${res.types[0].type.name} primary type`}
                           />
                           {res.types[1] && (
                             <img
-                              src={icns[res.types[1].type.name]}
+                              src={POKEMON_TYPE_ICONS[res.types[1].type.name]}
                               className="card__type"
                               alt={`${res.types[1].type.name} secondary type`}
                             />
@@ -683,10 +693,10 @@ export const App = () => {
             </ul>
           )}
         </section>
-        {!ldr && finalResult.length === 0 && (
-          <p className="noresults">No results for "{busqueda}"</p>
+        {!loading && pokemonsDetails.length === 0 && (
+          <p className="noresults">No results for "{search}"</p>
         )}
-        {showListErr && (
+        {showListError && (
           <p className="noresults">
             Parece que Snorlax está en el camino al servidor. Prueba a recargar
             la página o busca una pokeflauta
