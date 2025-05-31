@@ -58,6 +58,7 @@ const regs = [
 export const App = () => {
   const [ldr, setLdr] = useState<any>(false);
   const [fltr, setFltr] = useState<any>(false);
+  const [showListErr, setShowListErr] = useState<any>(false);
   const [result, setResult] = useState<any>([]);
   const [finalResult, setFinalResult] = useState<any>([]);
   const [busqueda, setBusqueda] = useState<any>("");
@@ -108,10 +109,27 @@ export const App = () => {
       }
       const { results }: any = await fetch(
         `https://pokeapi.co/api/v2/pokemon?offset=${regStart}&limit=${regEnd}`,
-      ).then((res) => res.json());
+      )
+        .then((res) => res.json())
+        .catch((err) => {
+          setShowListErr(true);
+          console.log("MI ERROR ===>", err);
+          return {};
+        });
+
+      console.log("@@@@@@@@@@@@@@@", results);
+
+      if (results === undefined) {
+        return;
+      }
       const result = await Promise.all(
         results.map(
-          async ({ url }) => await fetch(url).then((res) => res.json()),
+          async ({ url }) =>
+            await fetch(url)
+              .then((res) => res.json())
+              .catch((err) => {
+                console.log("MI ERROR ===>", err);
+              }),
         ),
       );
       setResult(result);
@@ -520,7 +538,7 @@ export const App = () => {
 
         {/* Muestra cartas cargando */}
         <section>
-          {(ldr || fltr) && (
+          {(ldr || fltr) && !showListErr && (
             <div className="grid" aria-hidden="true">
               {Array.from({ length: 6 }, (_, index) => {
                 return (
@@ -667,6 +685,12 @@ export const App = () => {
         </section>
         {!ldr && finalResult.length === 0 && (
           <p className="noresults">No results for "{busqueda}"</p>
+        )}
+        {showListErr && (
+          <p className="noresults">
+            Parece que Snorlax está en el camino al servidor. Prueba a recargar
+            la página o busca una pokeflauta
+          </p>
         )}
       </main>
 

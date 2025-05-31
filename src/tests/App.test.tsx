@@ -847,3 +847,18 @@ describe("Filtros y busqueda", () => {
     },
   );
 });
+
+describe("TDD", () => {
+  test("Debería mostrar el mensaje determinado cuando no se reciba una lista de pokemon", async () => {
+    vi.spyOn(globalThis, "fetch").mockRejectedValue(
+      new Error("Failed to fetch"),
+    );
+    render(<App />);
+
+    const mensajeError = await screen.findByText(
+      "Parece que Snorlax está en el camino al servidor. Prueba a recargar la página o busca una pokeflauta",
+    );
+
+    expect(mensajeError).toBeInTheDocument();
+  });
+});
