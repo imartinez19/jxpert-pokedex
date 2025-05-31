@@ -22,7 +22,7 @@ import pokeball from "./assets/pokeball.svg";
 /**
  *  Iconos de los tipos de Pokémon
  */
-const POKEMON_TYPE_ICONS: any = {
+const TYPE_ICONS: any = {
   bug,
   dark,
   dragon,
@@ -43,26 +43,28 @@ const POKEMON_TYPE_ICONS: any = {
   water,
 };
 
-const KANTO = "kanto";
-const JOHTO = "johto";
-const HOENN = "hoenn";
-const SINNOH = "sinnoh";
-const UNOVA = "unova";
-const KALOS = "kalos";
-const ALOLA = "alola";
-const GALAR = "galar";
-const PALDEA = "paldea";
+type Region = { name: string; start: number; end: number };
 
-const POKEMON_REGIONS = [
-  KANTO,
-  JOHTO,
-  HOENN,
-  SINNOH,
-  UNOVA,
-  KALOS,
-  ALOLA,
-  GALAR,
-  PALDEA,
+const KANTO: Region = { name: "kanto", start: 0, end: 151 };
+const JOHTO: Region = { name: "johto", start: 151, end: 251 };
+const HOENN: Region = { name: "hoenn", start: 251, end: 386 };
+const SINNOH: Region = { name: "sinnoh", start: 386, end: 494 };
+const UNOVA: Region = { name: "unova", start: 494, end: 649 };
+const KALOS: Region = { name: "kalos", start: 649, end: 721 };
+const ALOLA: Region = { name: "alola", start: 721, end: 809 };
+const GALAR: Region = { name: "galar", start: 809, end: 905 };
+const PALDEA: Region = { name: "paldea", start: 905, end: 1025 };
+
+const REGIONS = [
+  KANTO.name,
+  JOHTO.name,
+  HOENN.name,
+  SINNOH.name,
+  UNOVA.name,
+  KALOS.name,
+  ALOLA.name,
+  GALAR.name,
+  PALDEA.name,
 ];
 
 export const App = () => {
@@ -72,7 +74,7 @@ export const App = () => {
   const [pokemons, setPokemons] = useState<any>([]);
   const [pokemonsDetails, setPokemonDetails] = useState<any>([]);
   const [search, setSearch] = useState<string>("");
-  const [pokemonRegion, setPokemonRegion] = useState<string>(KANTO);
+  const [pokemonRegion, setPokemonRegion] = useState<string>(KANTO.name);
   const [showRegions, setShowRegions] = useState<boolean>(false);
   const [showSortingMenu, setShowSortingMenu] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("default");
@@ -86,36 +88,36 @@ export const App = () => {
       setFiltering(true);
 
       let regionStart, regionEnd;
-      if (pokemonRegion === KANTO) {
-        regionStart = 0;
-        regionEnd = 151;
-      } else if (pokemonRegion === JOHTO) {
-        regionStart = 151;
-        regionEnd = 251;
-      } else if (pokemonRegion === HOENN) {
-        regionStart = 251;
-        regionEnd = 386;
-      } else if (pokemonRegion === SINNOH) {
-        regionStart = 386;
-        regionEnd = 494;
-      } else if (pokemonRegion === UNOVA) {
-        regionStart = 494;
-        regionEnd = 649;
-      } else if (pokemonRegion === KALOS) {
-        regionStart = 649;
-        regionEnd = 721;
-      } else if (pokemonRegion === ALOLA) {
-        regionStart = 721;
-        regionEnd = 809;
-      } else if (pokemonRegion === GALAR) {
-        regionStart = 809;
-        regionEnd = 905;
-      } else if (pokemonRegion === PALDEA) {
-        regionStart = 905;
-        regionEnd = 1025;
+      if (pokemonRegion === KANTO.name) {
+        regionStart = KANTO.start;
+        regionEnd = KANTO.end;
+      } else if (pokemonRegion === JOHTO.name) {
+        regionStart = KANTO.start;
+        regionEnd = KANTO.end;
+      } else if (pokemonRegion === HOENN.name) {
+        regionStart = HOENN.start;
+        regionEnd = HOENN.end;
+      } else if (pokemonRegion === SINNOH.name) {
+        regionStart = SINNOH.start;
+        regionEnd = SINNOH.end;
+      } else if (pokemonRegion === UNOVA.name) {
+        regionStart = UNOVA.start;
+        regionEnd = UNOVA.end;
+      } else if (pokemonRegion === KALOS.name) {
+        regionStart = KALOS.start;
+        regionEnd = KALOS.end;
+      } else if (pokemonRegion === ALOLA.name) {
+        regionStart = ALOLA.start;
+        regionEnd = ALOLA.end;
+      } else if (pokemonRegion === GALAR.name) {
+        regionStart = GALAR.start;
+        regionEnd = GALAR.end;
+      } else if (pokemonRegion === PALDEA.name) {
+        regionStart = PALDEA.start;
+        regionEnd = PALDEA.end;
       } else {
-        regionStart = 0;
-        regionEnd = 151;
+        regionStart = KANTO.start;
+        regionEnd = KANTO.end;
       }
       const { results }: any = await fetch(
         `https://pokeapi.co/api/v2/pokemon?offset=${regionStart}&limit=${regionEnd}`,
@@ -326,7 +328,7 @@ export const App = () => {
               hidden={!showRegions}
               className={`dropdown__list ${!showRegions ? "hide" : ""}`}
             >
-              {POKEMON_REGIONS.map((key) => (
+              {REGIONS.map((key) => (
                 <li
                   key={key}
                   role="radio"
@@ -582,13 +584,13 @@ export const App = () => {
                         </div>
                         <div className="card__tag">
                           <img
-                            src={POKEMON_TYPE_ICONS[res.types[0].type.name]}
+                            src={TYPE_ICONS[res.types[0].type.name]}
                             className="card__type"
                             alt={`${res.types[0].type.name} primary type`}
                           />
                           {res.types[1] && (
                             <img
-                              src={POKEMON_TYPE_ICONS[res.types[1].type.name]}
+                              src={TYPE_ICONS[res.types[1].type.name]}
                               className="card__type"
                               alt={`${res.types[1].type.name} secondary type`}
                             />
