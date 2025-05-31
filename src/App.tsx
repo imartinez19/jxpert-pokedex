@@ -144,90 +144,22 @@ export const App = () => {
    * Sorts results based on selected sorting criteria.
    */
   useEffect(() => {
-    if (sortBy !== "default") {
-      if (sortBy === STATS.HEALTH_POINTS) {
-        setPokemonDetails((prev) =>
-          [...prev].sort((a, b) => {
-            const aStat = a.stats.find(
-              (stat) => stat.stat.name === STATS.HEALTH_POINTS,
-            );
-            const bStat = b.stats.find(
-              (stat) => stat.stat.name === STATS.HEALTH_POINTS,
-            );
-            return bStat.base_stat - aStat.base_stat;
-          }),
-        );
-      }
-      if (sortBy === STATS.ATTACK) {
-        setPokemonDetails((prev) =>
-          [...prev].sort((a, b) => {
-            const aStat = a.stats.find(
-              (stat) => stat.stat.name === STATS.ATTACK,
-            );
-            const bStat = b.stats.find(
-              (stat) => stat.stat.name === STATS.ATTACK,
-            );
-            return bStat.base_stat - aStat.base_stat;
-          }),
-        );
-      }
-      if (sortBy === STATS.DEFENSE) {
-        setPokemonDetails((prev) =>
-          [...prev].sort((a, b) => {
-            const aStat = a.stats.find(
-              (stat) => stat.stat.name === STATS.DEFENSE,
-            );
-            const bStat = b.stats.find(
-              (stat) => stat.stat.name === STATS.DEFENSE,
-            );
-            return bStat.base_stat - aStat.base_stat;
-          }),
-        );
-      }
-      if (sortBy === STATS.SPECIAL_ATTACK) {
-        setPokemonDetails((prev) =>
-          [...prev].sort((a, b) => {
-            const aStat = a.stats.find(
-              (stat) => stat.stat.name === STATS.SPECIAL_ATTACK,
-            );
-            const bStat = b.stats.find(
-              (stat) => stat.stat.name === STATS.SPECIAL_ATTACK,
-            );
-            return bStat.base_stat - aStat.base_stat;
-          }),
-        );
-      }
-      if (sortBy === STATS.SPECIAL_DEFENSE) {
-        setPokemonDetails((prev) =>
-          [...prev].sort((a, b) => {
-            const aStat = a.stats.find(
-              (stat) => stat.stat.name === STATS.SPECIAL_DEFENSE,
-            );
-            const bStat = b.stats.find(
-              (stat) => stat.stat.name === STATS.SPECIAL_DEFENSE,
-            );
-            return bStat.base_stat - aStat.base_stat;
-          }),
-        );
-      }
-      if (sortBy === STATS.SPEED) {
-        setPokemonDetails((prev) =>
-          [...prev].sort((a, b) => {
-            const aStat = a.stats.find(
-              (stat) => stat.stat.name === STATS.SPEED,
-            );
-            const bStat = b.stats.find(
-              (stat) => stat.stat.name === STATS.SPEED,
-            );
-            return bStat.base_stat - aStat.base_stat;
-          }),
-        );
-      }
-    }
     if (sortBy === DEFAULT_SORT) {
-      setPokemonDetails((prev) =>
-        [...prev].sort((a, b) => {
-          return a.id - b.id;
+      setPokemonDetails((pokemonDetails) =>
+        [...pokemonDetails].sort((firstPokemon, secondPokemon) => {
+          return firstPokemon.id - secondPokemon.id;
+        }),
+      );
+    } else {
+      setPokemonDetails((pokemonDetails) =>
+        [...pokemonDetails].sort((firstPokemon, secondPokemon) => {
+          const firstPokemonStat = firstPokemon.stats.find(
+            (stat) => stat.stat.name === sortBy,
+          );
+          const secondPokemonStat = secondPokemon.stats.find(
+            (stat) => stat.stat.name === sortBy,
+          );
+          return secondPokemonStat.base_stat - firstPokemonStat.base_stat;
         }),
       );
     }
