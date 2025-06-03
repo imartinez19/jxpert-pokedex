@@ -69,6 +69,14 @@ const REGIONS_RANGES: RegionRanges = {
   paldea: { start: 905, end: 1025 },
 };*/
 
+type PokemonListItem = { name: string; url: string };
+type Pokemon = {
+  id: number;
+  name: string;
+  sprites: any;
+  types: any;
+  stats: any;
+};
 type Region = { name: string; start: number; end: number };
 type Regions = { [key: string]: Region };
 
@@ -104,22 +112,27 @@ const NUMBER_LENGTH: number = 3;
 
 const API_BASE_URL = "https://pokeapi.co/api/v2";
 
-async function getPokemonData(pokemonRegion: Region) {
-  return await fetch(
+async function getPokemonList(
+  pokemonRegion: Region,
+): Promise<PokemonListItem[]> {
+  let pokemonList = await fetch(
     `${API_BASE_URL}/pokemon?offset=${pokemonRegion.start}&limit=${pokemonRegion.end}`,
-  ).then(async (pokemons) => {
-    const pokemonsJSON = await pokemons.json();
-    return await Promise.all(
-      pokemonsJSON.results.map(
-        async ({ url }) =>
-          await fetch(url)
-            .then((pokemonsDetails) => pokemonsDetails.json())
-            .catch((error) => {
-              console.log("MI ERROR ===>", error);
-            }),
-      ),
-    );
-  });
+  );
+  return (await pokemonList.json()).results;
+}
+
+async function getPokemonDetail(url: string): Promise<Pokemon> {
+  const pokemon = await fetch(url);
+  return pokemon.json();
+}
+
+async function getPokemonData(pokemonRegion: Region) {
+  const pokemon = await getPokemonList(pokemonRegion);
+  return await Promise.all(
+    pokemon.map(
+      async (pokemon: PokemonListItem) => await getPokemonDetail(pokemon.url),
+    ),
+  );
 }
 
 export const App = () => {
@@ -140,7 +153,8 @@ export const App = () => {
       setFiltering(true);
 
       try {
-        let pokemonsDetails = await getPokemonData(pokemonRegion);
+        const pokemonsDetails = await getPokemonData(pokemonRegion);
+        console.log("@@@@@@", pokemonsDetails);
         setPokemons(pokemonsDetails);
         setFilteredPokemons(pokemonsDetails);
       } catch (error) {
