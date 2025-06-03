@@ -44,6 +44,31 @@ const TYPE_ICONS: Icons = {
   water,
 };
 
+/*type Range = { start: number; end: number };
+type REGIONS =
+  | "kanto"
+  | "johto"
+  | "hoenn"
+  | "sinnoh"
+  | "unova"
+  | "kalos"
+  | "alola"
+  | "galar"
+  | "paldea";
+type RegionRanges = Record<REGIONS, Range>;
+
+const REGIONS_RANGES: RegionRanges = {
+  kanto: { start: 0, end: 151 },
+  johto: { start: 151, end: 251 },
+  hoenn: { start: 251, end: 386 },
+  sinnoh: { start: 386, end: 494 },
+  unova: { start: 494, end: 649 },
+  kalos: { start: 649, end: 721 },
+  alola: { start: 721, end: 809 },
+  galar: { start: 809, end: 905 },
+  paldea: { start: 905, end: 1025 },
+};*/
+
 type Region = { name: string; start: number; end: number };
 type Regions = { [key: string]: Region };
 
@@ -79,6 +104,24 @@ const NUMBER_LENGTH: number = 3;
 
 const API_BASE_URL = "https://pokeapi.co/api/v2";
 
+async function getPokemonData(pokemonRegion: Region) {
+  return await fetch(
+    `${API_BASE_URL}/pokemon?offset=${pokemonRegion.start}&limit=${pokemonRegion.end}`,
+  ).then(async (pokemons) => {
+    const pokemonsJSON = await pokemons.json();
+    return await Promise.all(
+      pokemonsJSON.results.map(
+        async ({ url }) =>
+          await fetch(url)
+            .then((pokemonsDetails) => pokemonsDetails.json())
+            .catch((error) => {
+              console.log("MI ERROR ===>", error);
+            }),
+      ),
+    );
+  });
+}
+
 export const App = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [filtering, setFiltering] = useState<boolean>(false);
@@ -96,29 +139,14 @@ export const App = () => {
       setLoading(true);
       setFiltering(true);
 
-      let pokemonsDetails;
-      await fetch(
-        `${API_BASE_URL}/pokemon?offset=${pokemonRegion.start}&limit=${pokemonRegion.end}`,
-      )
-        .then(async (pokemons) => {
-          const pokemonsJSON = await pokemons.json();
-          pokemonsDetails = await Promise.all(
-            pokemonsJSON.results.map(
-              async ({ url }) =>
-                await fetch(url)
-                  .then((pokemonsDetails) => pokemonsDetails.json())
-                  .catch((error) => {
-                    console.log("MI ERROR ===>", error);
-                  }),
-            ),
-          );
-          setPokemons(pokemonsDetails);
-          setFilteredPokemons(pokemonsDetails);
-        })
-        .catch((error) => {
-          setShowListError(true);
-          console.log("MI ERROR ===>", error);
-        });
+      try {
+        let pokemonsDetails = await getPokemonData(pokemonRegion);
+        setPokemons(pokemonsDetails);
+        setFilteredPokemons(pokemonsDetails);
+      } catch (error) {
+        setShowListError(true);
+        console.log("MI ERROR ===>", error);
+      }
 
       setLoading(false);
     };
