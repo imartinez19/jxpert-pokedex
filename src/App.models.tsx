@@ -1,5 +1,3 @@
-export type Range = { start: number; end: number };
-
 export const REGIONS = [
   "kanto",
   "johto",
@@ -12,6 +10,7 @@ export const REGIONS = [
   "paldea",
 ] as const;
 
+export type Range = { start: number; end: number };
 export type Region = (typeof REGIONS)[number];
 
 type RegionRanges = Record<Region, Range>;
@@ -27,13 +26,37 @@ export const REGIONS_RANGES: RegionRanges = {
   galar: { start: 809, end: 905 },
   paldea: { start: 905, end: 1025 },
 };
+
+export const STATS = [
+  "hp",
+  "attack",
+  "defense",
+  "special-attack",
+  "special-defense",
+  "speed",
+] as const;
+
+type StatInfo = { shortName: string; label: string };
+type StatType = (typeof STATS)[number];
+type StatsInfo = Record<StatType, StatInfo>;
+
+export const STATS_DETAILS: StatsInfo = {
+  hp: { shortName: "Hp", label: "Health points" },
+  attack: { shortName: "At", label: "Attack" },
+  defense: { shortName: "Df", label: "Defense" },
+  "special-attack": { shortName: "SpA", label: "Special attack" },
+  "special-defense": { shortName: "SpD", label: "Special defense" },
+  speed: { shortName: "Spd", label: "Speed" },
+};
+
 export type PokemonListItem = { name: string; url: string };
+export type PokemonStat = { base_stat: number; stat: { name: string } };
 export type Pokemon = {
   id: number;
   name: string;
   sprites: any;
   types: any;
-  stats: any;
+  stats: PokemonStat[];
 };
 export type Stats = {
   [key: string]: string;
