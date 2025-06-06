@@ -19,13 +19,13 @@ import steel from "./assets/steel.svg";
 import water from "./assets/water.svg";
 import pokeball from "./assets/pokeball.svg";
 import {
-  Stats,
   Icons,
   REGIONS_RANGES,
   Region,
   REGIONS,
   Pokemon,
   STATS,
+  STATS_INFO,
 } from "./App.models";
 import { getPokemonData } from "./App.service";
 import { Stat } from "./Stat.component";
@@ -55,15 +55,6 @@ const DEFAULT_SORT: string = "default";
 const LOADING_PLACEHOLDER_LENGTH: number = 6;
 export const MAX_STAT_VALUE: string = "255";
 const NUMBER_LENGTH: number = 3;
-
-const STATS_ANTIGUO: Stats = {
-  HEALTH_POINTS: "hp",
-  ATTACK: "attack",
-  DEFENSE: "defense",
-  SPECIAL_ATTACK: "special-attack",
-  SPECIAL_DEFENSE: "special-defense",
-  SPEED: "speed",
-};
 
 export const App = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -294,14 +285,10 @@ export const App = () => {
             <article className="sort__wrapper">
               <h3 className="sort__title">Sort by</h3>
               <div className="sort__items" role="listbox" id="sort-list">
-                <span
-                  role="radio"
-                  aria-label="Default"
-                  tabIndex={0}
-                  className={`sort__pill ${
-                    sortBy === DEFAULT_SORT ? "active" : ""
-                  }`}
-                  aria-checked={sortBy === DEFAULT_SORT}
+                <SortSpanButton
+                  label="Default"
+                  shortName="Default"
+                  checked={sortBy === DEFAULT_SORT}
                   onClick={() => {
                     setSortBy(DEFAULT_SORT);
                     setShowSortingMenu(false);
@@ -312,136 +299,26 @@ export const App = () => {
                       setShowSortingMenu(false);
                     }
                   }}
-                >
-                  {" "}
-                  Default
-                </span>
-                <span
-                  role="radio"
-                  aria-label="Health points"
-                  tabIndex={0}
-                  className={`sort__pill ${sortBy === STATS_ANTIGUO.HEALTH_POINTS ? "active" : ""}`}
-                  aria-checked={sortBy === STATS_ANTIGUO.HEALTH_POINTS}
-                  onClick={() => {
-                    setSortBy(STATS_ANTIGUO.HEALTH_POINTS);
-                    setShowSortingMenu(false);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setSortBy(STATS_ANTIGUO.HEALTH_POINTS);
-                      setShowSortingMenu(false);
-                    }
-                  }}
-                >
-                  {" "}
-                  Hp
-                </span>
-                <span
-                  role="radio"
-                  aria-label="Attack"
-                  tabIndex={0}
-                  className={`sort__pill ${
-                    sortBy === STATS_ANTIGUO.ATTACK ? "active" : ""
-                  }`}
-                  aria-checked={sortBy === STATS_ANTIGUO.ATTACK}
-                  onClick={() => {
-                    setSortBy(STATS_ANTIGUO.ATTACK);
-                    setShowSortingMenu(false);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setSortBy(STATS_ANTIGUO.ATTACK);
-                      setShowSortingMenu(false);
-                    }
-                  }}
-                >
-                  {" "}
-                  At
-                </span>
-                <span
-                  role="radio"
-                  aria-label="Defense"
-                  tabIndex={0}
-                  className={`sort__pill ${
-                    sortBy === STATS_ANTIGUO.DEFENSE ? "active" : ""
-                  }`}
-                  aria-checked={sortBy === STATS_ANTIGUO.DEFENSE}
-                  onClick={() => {
-                    setSortBy(STATS_ANTIGUO.DEFENSE);
-                    setShowSortingMenu(false);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setSortBy(STATS_ANTIGUO.DEFENSE);
-                      setShowSortingMenu(false);
-                    }
-                  }}
-                >
-                  Df
-                </span>
-                <span
-                  role="radio"
-                  aria-label="Special attack"
-                  tabIndex={0}
-                  className={`sort__pill ${
-                    sortBy === STATS_ANTIGUO.SPECIAL_ATTACK ? "active" : ""
-                  }`}
-                  aria-checked={sortBy === STATS_ANTIGUO.SPECIAL_ATTACK}
-                  onClick={() => {
-                    setSortBy(STATS_ANTIGUO.SPECIAL_ATTACK);
-                    setShowSortingMenu(false);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setSortBy(STATS_ANTIGUO.SPECIAL_ATTACK);
-                      setShowSortingMenu(false);
-                    }
-                  }}
-                >
-                  {" "}
-                  SpA
-                </span>
-                <span
-                  role="radio"
-                  aria-label="Special defense"
-                  tabIndex={0}
-                  className={`sort__pill ${
-                    sortBy === STATS_ANTIGUO.SPECIAL_DEFENSE ? "active" : ""
-                  }`}
-                  aria-checked={sortBy === STATS_ANTIGUO.SPECIAL_DEFENSE}
-                  onClick={() => {
-                    setSortBy(STATS_ANTIGUO.SPECIAL_DEFENSE);
-                    setShowSortingMenu(false);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setSortBy(STATS_ANTIGUO.SPECIAL_DEFENSE);
-                      setShowSortingMenu(false);
-                    }
-                  }}
-                >
-                  SpD
-                </span>
-                <span
-                  role="radio"
-                  aria-label="Speed"
-                  tabIndex={0}
-                  className={`sort__pill ${sortBy === STATS_ANTIGUO.SPEED ? "active" : ""}`}
-                  aria-checked={sortBy === STATS_ANTIGUO.SPEED}
-                  onClick={() => {
-                    setSortBy(STATS_ANTIGUO.SPEED);
-                    setShowSortingMenu(false);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setSortBy(STATS_ANTIGUO.SPEED);
-                      setShowSortingMenu(false);
-                    }
-                  }}
-                >
-                  {" "}
-                  Spd
-                </span>
+                />
+                {STATS.map((stat) => {
+                  return (
+                    <SortSpanButton
+                      label={STATS_INFO[stat].label}
+                      shortName={STATS_INFO[stat].shortName}
+                      checked={sortBy === stat}
+                      onClick={() => {
+                        setSortBy(stat);
+                        setShowSortingMenu(false);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          setSortBy(stat);
+                          setShowSortingMenu(false);
+                        }
+                      }}
+                    />
+                  );
+                })}
               </div>
             </article>
           )}
@@ -552,3 +429,18 @@ export const App = () => {
     </div>
   );
 };
+function SortSpanButton({ label, shortName, onClick, onKeyDown, checked }) {
+  return (
+    <span
+      role="radio"
+      aria-label={label}
+      tabIndex={0}
+      className={`sort__pill ${checked ? "active" : ""}`}
+      aria-checked={checked}
+      onClick={onClick}
+      onKeyDown={onKeyDown}
+    >
+      {shortName}
+    </span>
+  );
+}

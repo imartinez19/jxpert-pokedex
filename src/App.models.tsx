@@ -40,7 +40,7 @@ type StatInfo = { shortName: string; label: string };
 type StatType = (typeof STATS)[number];
 type StatsInfo = Record<StatType, StatInfo>;
 
-export const STATS_DETAILS: StatsInfo = {
+export const STATS_INFO: StatsInfo = {
   hp: { shortName: "Hp", label: "Health points" },
   attack: { shortName: "At", label: "Attack" },
   defense: { shortName: "Df", label: "Defense" },
@@ -48,6 +48,19 @@ export const STATS_DETAILS: StatsInfo = {
   "special-defense": { shortName: "SpD", label: "Special defense" },
   speed: { shortName: "Spd", label: "Speed" },
 };
+
+// export const SORT_FIELDS = [
+//   "default",
+//   ...STATS
+// ] as const;
+
+// type SortField = (typeof SORT_FIELDS)[number];
+// type SortsFieldsInfo = Record<SortField, StatInfo>;
+// //
+// export const SORT_FIELDS_INFO : SortsFieldsInfo = [
+//   ...STATS_INFO,
+//   default: { shortName: "Hp", label: "Health points" },
+// ]
 
 export type PokemonListItem = { name: string; url: string };
 export type PokemonStat = { base_stat: number; stat: { name: string } };
