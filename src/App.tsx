@@ -18,7 +18,7 @@ import rock from "./assets/rock.svg";
 import steel from "./assets/steel.svg";
 import water from "./assets/water.svg";
 import pokeball from "./assets/pokeball.svg";
-import { Regions, Region, Stats, Icons } from "./App.models";
+import { Stats, Icons, REGIONS_RANGES, Region, REGIONS } from "./App.models";
 import { getPokemonData } from "./App.service";
 
 const TYPE_ICONS: Icons = {
@@ -42,18 +42,6 @@ const TYPE_ICONS: Icons = {
   water,
 };
 
-const REGIONS: Regions = {
-  KANTO: { name: "kanto", start: 0, end: 151 },
-  JOHTO: { name: "johto", start: 151, end: 251 },
-  HOENN: { name: "hoenn", start: 251, end: 386 },
-  SINNOH: { name: "sinnoh", start: 386, end: 494 },
-  UNOVA: { name: "unova", start: 494, end: 649 },
-  KALOS: { name: "kalos", start: 649, end: 721 },
-  ALOLA: { name: "alola", start: 721, end: 809 },
-  GALAR: { name: "galar", start: 809, end: 905 },
-  PALDEA: { name: "paldea", start: 905, end: 1025 },
-};
-
 const STATS: Stats = {
   HEALTH_POINTS: "hp",
   ATTACK: "attack",
@@ -75,7 +63,7 @@ export const App = () => {
   const [pokemons, setPokemons] = useState<any>([]);
   const [filteredPokemons, setFilteredPokemons] = useState<any>([]);
   const [search, setSearch] = useState<string>("");
-  const [pokemonRegion, setPokemonRegion] = useState<Region>(REGIONS.KANTO);
+  const [pokemonRegion, setPokemonRegion] = useState<Region>("kanto");
   const [showRegions, setShowRegions] = useState<boolean>(false);
   const [showSortingMenu, setShowSortingMenu] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("default");
@@ -86,7 +74,9 @@ export const App = () => {
       setFiltering(true);
 
       try {
-        const pokemonsDetails = await getPokemonData(pokemonRegion);
+        const pokemonsDetails = await getPokemonData(
+          REGIONS_RANGES[pokemonRegion],
+        );
         setPokemons(pokemonsDetails);
         setFilteredPokemons(pokemonsDetails);
       } catch (error) {
@@ -196,7 +186,7 @@ export const App = () => {
                 })
               }
             >
-              {pokemonRegion.name}
+              {pokemonRegion}
               <svg
                 width="16"
                 height="16"
@@ -226,9 +216,9 @@ export const App = () => {
               hidden={!showRegions}
               className={`dropdown__list ${!showRegions ? "hide" : ""}`}
             >
-              {Object.values(REGIONS).map((region) => (
+              {REGIONS.map((region) => (
                 <li
-                  key={region.name}
+                  key={region}
                   role="radio"
                   aria-checked={pokemonRegion === region}
                   tabIndex={0}
@@ -244,7 +234,7 @@ export const App = () => {
                     }
                   }}
                 >
-                  {region.name}
+                  {region}
                 </li>
               ))}
             </ol>

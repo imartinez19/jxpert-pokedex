@@ -1,17 +1,22 @@
-/*type Range = { start: number; end: number };
-type REGIONS =
-  | "kanto"
-  | "johto"
-  | "hoenn"
-  | "sinnoh"
-  | "unova"
-  | "kalos"
-  | "alola"
-  | "galar"
-  | "paldea";
-type RegionRanges = Record<REGIONS, Range>;
+export type Range = { start: number; end: number };
 
-const REGIONS_RANGES: RegionRanges = {
+export const REGIONS = [
+  "kanto",
+  "johto",
+  "hoenn",
+  "sinnoh",
+  "unova",
+  "kalos",
+  "alola",
+  "galar",
+  "paldea",
+] as const;
+
+export type Region = (typeof REGIONS)[number];
+
+type RegionRanges = Record<Region, Range>;
+
+export const REGIONS_RANGES: RegionRanges = {
   kanto: { start: 0, end: 151 },
   johto: { start: 151, end: 251 },
   hoenn: { start: 251, end: 386 },
@@ -21,7 +26,7 @@ const REGIONS_RANGES: RegionRanges = {
   alola: { start: 721, end: 809 },
   galar: { start: 809, end: 905 },
   paldea: { start: 905, end: 1025 },
-};*/
+};
 export type PokemonListItem = { name: string; url: string };
 export type Pokemon = {
   id: number;
@@ -30,8 +35,6 @@ export type Pokemon = {
   types: any;
   stats: any;
 };
-export type Region = { name: string; start: number; end: number };
-export type Regions = { [key: string]: Region };
 export type Stats = {
   [key: string]: string;
 };
