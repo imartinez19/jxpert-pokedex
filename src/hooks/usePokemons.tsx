@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { DEFAULT_SORT } from "../types/constants";
 import { Pokemon } from "../types/pokemon";
 import { Region, REGIONS_RANGES } from "../types/regions";
+import { SortField } from "../types/sortFields";
 import { pokemonService } from "../services/pokemon.service";
 
 export function usePokemons() {
   const [filteredPokemons, setFilteredPokemons] = useState<Pokemon[]>([]);
-  const [pokemons, setPokemons] = useState<any>([]);
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [showListError, setShowListError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [filtering, setFiltering] = useState<boolean>(false);
@@ -14,7 +15,7 @@ export function usePokemons() {
   const [search, setSearch] = useState<string>("");
   const [showRegions, setShowRegions] = useState<boolean>(false);
   const [showSortingMenu, setShowSortingMenu] = useState<boolean>(false);
-  const [sortBy, setSortBy] = useState<string>("default");
+  const [sortBy, setSortBy] = useState<SortField>("default");
 
   useEffect(() => {
     setLoading(true);
@@ -46,28 +47,27 @@ export function usePokemons() {
   }, [pokemons[0]?.id, search]);
 
   useEffect(() => {
-    if (sortBy === DEFAULT_SORT) {
-      setFilteredPokemons((pokemonDetails) =>
-        [...pokemonDetails].sort((firstPokemon, secondPokemon) => {
-          return firstPokemon.id - secondPokemon.id;
-        }),
-      );
-    } else {
-      setFilteredPokemons((pokemonDetails) =>
-        [...pokemonDetails].sort((firstPokemon, secondPokemon) => {
-          const firstPokemonStat = firstPokemon.stats.find(
-            (stat) => stat.stat.name === sortBy,
-          );
-          const secondPokemonStat = secondPokemon.stats.find(
-            (stat) => stat.stat.name === sortBy,
-          );
-          return secondPokemonStat && firstPokemonStat
-            ? secondPokemonStat.base_stat - firstPokemonStat.base_stat
-            : 0;
-        }),
-      );
-    }
+    setFilteredPokemons(sortPokemon(sortBy));
   }, [filteredPokemons[0]?.id, sortBy]);
+
+  function sortPokemon(sortBy: SortField) {
+    if (sortBy === DEFAULT_SORT) {
+      return [...filteredPokemons].sort((firstPokemon, secondPokemon) => {
+        return firstPokemon.id - secondPokemon.id;
+      });
+    }
+    return [...filteredPokemons].sort((firstPokemon, secondPokemon) => {
+      const firstPokemonStat = firstPokemon.stats.find(
+        (stat) => stat.stat.name === sortBy,
+      );
+      const secondPokemonStat = secondPokemon.stats.find(
+        (stat) => stat.stat.name === sortBy,
+      );
+      return secondPokemonStat && firstPokemonStat
+        ? secondPokemonStat.base_stat - firstPokemonStat.base_stat
+        : 0;
+    });
+  }
 
   return {
     filteredPokemons,
