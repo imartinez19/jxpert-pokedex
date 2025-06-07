@@ -1,4 +1,4 @@
-import { MAX_STAT_VALUE } from "./App";
+import { MAX_STAT_VALUE } from "./App.models";
 import { PokemonStat, STATS_INFO } from "./App.models";
 
 type StatProps = {

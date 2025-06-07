@@ -1,136 +1,33 @@
-import { useEffect, useState } from "react";
-import bug from "./assets/bug.svg";
-import dark from "./assets/dark.svg";
-import dragon from "./assets/dragon.svg";
-import electric from "./assets/electric.svg";
-import fairy from "./assets/fairy.svg";
-import fighting from "./assets/fighting.svg";
-import fire from "./assets/fire.svg";
-import flying from "./assets/flying.svg";
-import ghost from "./assets/ghost.svg";
-import grass from "./assets/grass.svg";
-import ground from "./assets/ground.svg";
-import ice from "./assets/ice.svg";
-import normal from "./assets/normal.svg";
-import poison from "./assets/poison.svg";
-import psychic from "./assets/psychic.svg";
-import rock from "./assets/rock.svg";
-import steel from "./assets/steel.svg";
-import water from "./assets/water.svg";
 import pokeball from "./assets/pokeball.svg";
 import {
-  Icons,
-  REGIONS_RANGES,
-  Region,
+  DEFAULT_SORT,
+  LOADING_PLACEHOLDER_LENGTH,
+  NUMBER_LENGTH,
   REGIONS,
-  Pokemon,
   STATS,
   STATS_INFO,
+  TYPE_ICONS,
 } from "./App.models";
-import { getPokemonData } from "./App.service";
-import { Stat } from "./Stat.component";
-
-const TYPE_ICONS: Icons = {
-  bug,
-  dark,
-  dragon,
-  electric,
-  fairy,
-  fighting,
-  fire,
-  flying,
-  ghost,
-  grass,
-  ground,
-  ice,
-  normal,
-  poison,
-  psychic,
-  rock,
-  steel,
-  water,
-};
-const DEFAULT_SORT: string = "default";
-
-const LOADING_PLACEHOLDER_LENGTH: number = 6;
-export const MAX_STAT_VALUE: string = "255";
-const NUMBER_LENGTH: number = 3;
+import { usePokemons } from "./usePokemons";
+import { Stat } from "./Stat";
 
 export const App = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [filtering, setFiltering] = useState<boolean>(false);
-  const [showListError, setShowListError] = useState<boolean>(false);
-  const [pokemons, setPokemons] = useState<any>([]);
-  const [filteredPokemons, setFilteredPokemons] = useState<Pokemon[]>([]);
-  const [search, setSearch] = useState<string>("");
-  const [pokemonRegion, setPokemonRegion] = useState<Region>("kanto");
-  const [showRegions, setShowRegions] = useState<boolean>(false);
-  const [showSortingMenu, setShowSortingMenu] = useState<boolean>(false);
-  const [sortBy, setSortBy] = useState<string>("default");
-
-  useEffect(() => {
-    const getPokemonsDetails = async () => {
-      setLoading(true);
-      setFiltering(true);
-
-      try {
-        const pokemonsDetails = await getPokemonData(
-          REGIONS_RANGES[pokemonRegion],
-        );
-        setPokemons(pokemonsDetails);
-        setFilteredPokemons(pokemonsDetails);
-      } catch (error) {
-        setShowListError(true);
-        console.log("MI ERROR ===>", error);
-      }
-
-      setLoading(false);
-    };
-    getPokemonsDetails();
-  }, [pokemonRegion]);
-
-  /**
-   * Filters results based on input query term.
-   */
-  useEffect(() => {
-    setFilteredPokemons(
-      pokemons.filter(
-        (filteredPokemons) =>
-          filteredPokemons.name.includes(search.toLowerCase()) ||
-          !!filteredPokemons.types.find((type) =>
-            type.type.name.startsWith(search.toLowerCase()),
-          ),
-      ),
-    );
-    setFiltering(false);
-  }, [pokemons[0]?.id, search]);
-
-  /**
-   * Sorts results based on selected sorting criteria.
-   */
-  useEffect(() => {
-    if (sortBy === DEFAULT_SORT) {
-      setFilteredPokemons((pokemonDetails) =>
-        [...pokemonDetails].sort((firstPokemon, secondPokemon) => {
-          return firstPokemon.id - secondPokemon.id;
-        }),
-      );
-    } else {
-      setFilteredPokemons((pokemonDetails) =>
-        [...pokemonDetails].sort((firstPokemon, secondPokemon) => {
-          const firstPokemonStat = firstPokemon.stats.find(
-            (stat) => stat.stat.name === sortBy,
-          );
-          const secondPokemonStat = secondPokemon.stats.find(
-            (stat) => stat.stat.name === sortBy,
-          );
-          return secondPokemonStat && firstPokemonStat
-            ? secondPokemonStat.base_stat - firstPokemonStat.base_stat
-            : 0;
-        }),
-      );
-    }
-  }, [filteredPokemons[0]?.id, sortBy]);
+  const {
+    filteredPokemons,
+    showListError,
+    loading,
+    filtering,
+    pokemonRegion,
+    search,
+    showRegions,
+    showSortingMenu,
+    sortBy,
+    setPokemonRegion,
+    setSearch,
+    setShowRegions,
+    setShowSortingMenu,
+    setSortBy,
+  } = usePokemons();
 
   return (
     <div className="layout">
