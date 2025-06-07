@@ -1,15 +1,12 @@
 import pokeball from "./assets/pokeball.svg";
-import {
-  DEFAULT_SORT,
-  LOADING_PLACEHOLDER_LENGTH,
-  NUMBER_LENGTH,
-  REGIONS,
-  STATS,
-  STATS_INFO,
-  TYPE_ICONS,
-} from "./App.models";
-import { usePokemons } from "./usePokemons";
-import { Stat } from "./Stat";
+import { LOADING_PLACEHOLDER_LENGTH, NUMBER_LENGTH } from "./types/constants";
+import { SORT_FIELDS, SORT_FIELDS_INFO } from "./types/sortFields";
+import { STATS } from "./types/stats";
+import { TYPE_ICONS } from "./types/icons";
+import { usePokemons } from "./hooks/usePokemons";
+import { Stat } from "./components/Stat";
+import { SortSpanButton } from "./components/SortSpanButton";
+import { REGIONS } from "./types/regions";
 
 export const App = () => {
   const {
@@ -182,34 +179,19 @@ export const App = () => {
             <article className="sort__wrapper">
               <h3 className="sort__title">Sort by</h3>
               <div className="sort__items" role="listbox" id="sort-list">
-                <SortSpanButton
-                  label="Default"
-                  shortName="Default"
-                  checked={sortBy === DEFAULT_SORT}
-                  onClick={() => {
-                    setSortBy(DEFAULT_SORT);
-                    setShowSortingMenu(false);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setSortBy(DEFAULT_SORT);
-                      setShowSortingMenu(false);
-                    }
-                  }}
-                />
-                {STATS.map((stat) => {
+                {SORT_FIELDS.map((sortfield) => {
                   return (
                     <SortSpanButton
-                      label={STATS_INFO[stat].label}
-                      shortName={STATS_INFO[stat].shortName}
-                      checked={sortBy === stat}
+                      label={SORT_FIELDS_INFO[sortfield].label}
+                      shortName={SORT_FIELDS_INFO[sortfield].shortName}
+                      checked={sortBy === sortfield}
                       onClick={() => {
-                        setSortBy(stat);
+                        setSortBy(sortfield);
                         setShowSortingMenu(false);
                       }}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
-                          setSortBy(stat);
+                          setSortBy(sortfield);
                           setShowSortingMenu(false);
                         }
                       }}
@@ -326,18 +308,3 @@ export const App = () => {
     </div>
   );
 };
-function SortSpanButton({ label, shortName, onClick, onKeyDown, checked }) {
-  return (
-    <span
-      role="radio"
-      aria-label={label}
-      tabIndex={0}
-      className={`sort__pill ${checked ? "active" : ""}`}
-      aria-checked={checked}
-      onClick={onClick}
-      onKeyDown={onKeyDown}
-    >
-      {shortName}
-    </span>
-  );
-}

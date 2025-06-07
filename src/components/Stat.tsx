@@ -1,5 +1,6 @@
-import { MAX_STAT_VALUE } from "./App.models";
-import { PokemonStat, STATS_INFO } from "./App.models";
+import { MAX_STAT_VALUE } from "../types/constants";
+import { PokemonStat } from "../types/pokemon";
+import { STATS_INFO } from "../types/stats";
 
 type StatProps = {
   stat: PokemonStat;

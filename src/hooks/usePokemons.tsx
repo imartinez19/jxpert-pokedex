@@ -1,6 +1,8 @@
 import { useState, useCallback, useEffect } from "react";
-import { Pokemon, Region, REGIONS_RANGES, DEFAULT_SORT } from "./App.models";
-import { getPokemonData } from "./pokemon.service";
+import { DEFAULT_SORT } from "../types/constants";
+import { Pokemon } from "../types/pokemon";
+import { Region, REGIONS_RANGES } from "../types/regions";
+import { getPokemonData } from "../services/pokemon.service";
 
 export function usePokemons() {
   const [filteredPokemons, setFilteredPokemons] = useState<Pokemon[]>([]);
