@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { DEFAULT_SORT } from "../types/constants";
 import { Pokemon } from "../types/pokemon";
 import { Region, REGIONS_RANGES } from "../types/regions";
-import { getPokemonData } from "../services/pokemon.service";
+import { pokemonService } from "../services/pokemon.service";
 
 export function usePokemons() {
   const [filteredPokemons, setFilteredPokemons] = useState<Pokemon[]>([]);
@@ -16,22 +16,20 @@ export function usePokemons() {
   const [showSortingMenu, setShowSortingMenu] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("default");
 
-  const getPokemon = useCallback(async (pokeRegion) => {
+  useEffect(() => {
     setLoading(true);
     setFiltering(true);
-    try {
-      const pokemonsDetails = await getPokemonData(REGIONS_RANGES[pokeRegion]);
-      setPokemons(pokemonsDetails);
-      setFilteredPokemons(pokemonsDetails);
-    } catch (error) {
-      setShowListError(true);
-      console.log("MI ERROR ===>", error);
-    }
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    getPokemon(pokemonRegion);
+    pokemonService
+      .getPokemonData(REGIONS_RANGES[pokemonRegion])
+      .then((res) => {
+        setPokemons(res);
+        setFilteredPokemons(res);
+      })
+      .catch((error) => {
+        setShowListError(true);
+        console.log("MI ERROR ===>", error);
+      })
+      .finally(() => setLoading(false));
   }, [pokemonRegion]);
 
   useEffect(() => {

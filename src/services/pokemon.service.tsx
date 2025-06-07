@@ -16,7 +16,7 @@ async function getPokemonDetail(url: string): Promise<Pokemon> {
   const pokemon = await fetch(url);
   return pokemon.json();
 }
-export async function getPokemonData(pokemonRegion: Range) {
+async function getPokemonData(pokemonRegion: Range) {
   const pokemon = await getPokemonList(pokemonRegion);
   return await Promise.all(
     pokemon.map(
@@ -24,3 +24,7 @@ export async function getPokemonData(pokemonRegion: Range) {
     ),
   );
 }
+
+export const pokemonService = {
+  getPokemonData,
+};
