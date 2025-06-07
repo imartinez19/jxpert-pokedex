@@ -43,61 +43,61 @@ export function PokemonCards({
       {!filtering && !loading && filteredPokemons.length > 0 && (
         <ul className="grid">
           {filteredPokemons.map((pokemon) => {
-            const customStyles: any = {
-              "--color-type": `var(--color-${pokemon.types[0].type.name}`,
-            };
-
-            return (
-              <li key={`pokemon-card-${pokemon.id}`}>
-                <article className="card" style={customStyles}>
-                  <header className="card__head">
-                    <div className="card__tag">
-                      <p>
-                        #{pokemon.id.toString().padStart(NUMBER_LENGTH, "0")}
-                      </p>
-                    </div>
-                    <div className="card__tag">
-                      <img
-                        src={TYPE_ICONS[pokemon.types[0].type.name]}
-                        className="card__type"
-                        alt={`${pokemon.types[0].type.name} primary type`}
-                      />
-                      {pokemon.types[1] && (
-                        <img
-                          src={TYPE_ICONS[pokemon.types[1].type.name]}
-                          className="card__type"
-                          alt={`${pokemon.types[1].type.name} secondary type`}
-                        />
-                      )}
-                    </div>
-                  </header>
-                  <img
-                    className="card__avatar"
-                    src={
-                      pokemon.sprites.other["official-artwork"].front_default
-                    }
-                    loading="lazy"
-                    alt={`${pokemon.name} artwork`}
-                  />
-                  <section className="card__content">
-                    <h3 className="card__title">{pokemon.name}</h3>
-                    <ul aria-description="Stats resume">
-                      {STATS.map((stat) => {
-                        const findedStat = pokemon.stats.find(
-                          (findStat) => findStat.stat.name === stat,
-                        );
-                        return findedStat ? (
-                          <Stat key={stat} stat={findedStat} />
-                        ) : null;
-                      })}
-                    </ul>
-                  </section>
-                </article>
-              </li>
-            );
+            return <PokemonCard pokemon={pokemon} />;
           })}
         </ul>
       )}
     </section>
+  );
+}
+type PokemonCardProps = {
+  pokemon: Pokemon;
+};
+
+function PokemonCard({ pokemon }: PokemonCardProps) {
+  const customStyles: any = {
+    "--color-type": `var(--color-${pokemon.types[0].type.name}`,
+  };
+  return (
+    <li key={`pokemon-card-${pokemon.id}`}>
+      <article className="card" style={customStyles}>
+        <header className="card__head">
+          <div className="card__tag">
+            <p>#{pokemon.id.toString().padStart(NUMBER_LENGTH, "0")}</p>
+          </div>
+          <div className="card__tag">
+            <img
+              src={TYPE_ICONS[pokemon.types[0].type.name]}
+              className="card__type"
+              alt={`${pokemon.types[0].type.name} primary type`}
+            />
+            {pokemon.types[1] && (
+              <img
+                src={TYPE_ICONS[pokemon.types[1].type.name]}
+                className="card__type"
+                alt={`${pokemon.types[1].type.name} secondary type`}
+              />
+            )}
+          </div>
+        </header>
+        <img
+          className="card__avatar"
+          src={pokemon.sprites.other["official-artwork"].front_default}
+          loading="lazy"
+          alt={`${pokemon.name} artwork`}
+        />
+        <section className="card__content">
+          <h3 className="card__title">{pokemon.name}</h3>
+          <ul aria-description="Stats resume">
+            {STATS.map((stat) => {
+              const findedStat = pokemon.stats.find(
+                (findStat) => findStat.stat.name === stat,
+              );
+              return findedStat ? <Stat key={stat} stat={findedStat} /> : null;
+            })}
+          </ul>
+        </section>
+      </article>
+    </li>
   );
 }
