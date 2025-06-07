@@ -182,6 +182,7 @@ export const App = () => {
                 {SORT_FIELDS.map((sortfield) => {
                   return (
                     <SortSpanButton
+                      key={sortfield}
                       label={SORT_FIELDS_INFO[sortfield].label}
                       shortName={SORT_FIELDS_INFO[sortfield].shortName}
                       checked={sortBy === sortfield}
@@ -275,7 +276,7 @@ export const App = () => {
                               (findStat) => findStat.stat.name === stat,
                             );
                             return findedStat ? (
-                              <Stat stat={findedStat} />
+                              <Stat key={stat} stat={findedStat} />
                             ) : null;
                           })}
                         </ul>
