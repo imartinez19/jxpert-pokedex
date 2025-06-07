@@ -16,12 +16,12 @@ type RegionRanges = Record<Region, Range>;
 
 export const REGIONS_RANGES: RegionRanges = {
   kanto: { start: 0, end: 151 },
-  johto: { start: 151, end: 251 },
-  hoenn: { start: 251, end: 386 },
-  sinnoh: { start: 386, end: 494 },
-  unova: { start: 494, end: 649 },
-  kalos: { start: 649, end: 721 },
-  alola: { start: 721, end: 809 },
-  galar: { start: 809, end: 905 },
-  paldea: { start: 905, end: 1025 },
+  johto: { start: 151, end: 100 },
+  hoenn: { start: 251, end: 135 },
+  sinnoh: { start: 386, end: 108 },
+  unova: { start: 494, end: 155 },
+  kalos: { start: 649, end: 72 },
+  alola: { start: 721, end: 88 },
+  galar: { start: 809, end: 96 },
+  paldea: { start: 905, end: 120 },
 };
