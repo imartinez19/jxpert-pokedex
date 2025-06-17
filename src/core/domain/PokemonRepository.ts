@@ -1,6 +1,6 @@
-import { Range } from "./Region";
+import { Region } from "./Region";
 import { Pokemon } from "./Pokemon";
 
 export interface PokemonRepository {
-  listByRegion(region: Range): Promise<Pokemon[]>;
+  listByRegion(region: Region): Promise<Pokemon[]>;
 }

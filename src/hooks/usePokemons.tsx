@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { DEFAULT_SORT } from "../types/constants";
 import { Pokemon } from "../core/domain/Pokemon";
-import { Region, REGIONS_RANGES } from "../core/domain/Region";
+import { Region } from "../core/domain/Region";
 import { SortField } from "../core/domain/SortField";
 import { PokemonService } from "../core/service/PokemonService";
 import { ApiPokemonRepository } from "../core/infraestructure/ApiPokemonRepository";
@@ -25,7 +25,7 @@ export function usePokemons() {
     setLoading(true);
     setFiltering(true);
     pokemonService
-      .listByRegion(REGIONS_RANGES[pokemonRegion])
+      .listByRegion(pokemonRegion)
       .then((res) => {
         setPokemons(res);
         setFilteredPokemons(res);
