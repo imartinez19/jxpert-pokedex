@@ -1,4 +1,4 @@
-import { Range } from "../../types/regions";
+import { Range } from "../domain/Region";
 import { Pokemon, PokemonListItem } from "../domain/Pokemon";
 import { PokemonRepository } from "../domain/PokemonRepository";
 

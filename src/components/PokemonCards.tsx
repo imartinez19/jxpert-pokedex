@@ -5,7 +5,7 @@ import {
 } from "./../types/constants";
 import { TYPE_ICONS } from "./../types/icons";
 import { Pokemon } from "./../types/pokemon";
-import { STATS } from "./../types/stats";
+import { STATS } from "../core/domain/Stat";
 
 type CardsProps = {
   loading: boolean;

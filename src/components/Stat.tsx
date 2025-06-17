@@ -1,6 +1,6 @@
 import { PokemonStat } from "../core/domain/Pokemon";
 import { MAX_STAT_VALUE } from "../types/constants";
-import { STATS_INFO } from "../types/stats";
+import { STATS_INFO } from "../core/domain/Stat";
 
 type StatProps = {
   stat: PokemonStat;

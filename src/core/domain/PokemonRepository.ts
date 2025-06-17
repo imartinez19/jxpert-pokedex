@@ -1,4 +1,4 @@
-import { Range } from "../../types/regions";
+import { Range } from "./Region";
 import { Pokemon } from "./Pokemon";
 
 export interface PokemonRepository {

@@ -1,6 +1,6 @@
 import { SortSpanButton } from "./../components/SortSpanButton";
-import { REGIONS } from "./../types/regions";
-import { SORT_FIELDS, SORT_FIELDS_INFO } from "./../types/sortFields";
+import { REGIONS } from "../core/domain/Region";
+import { SORT_FIELDS, SORT_FIELDS_INFO } from "../core/domain/SortField";
 
 type SearchBarProps = {
   search: string;

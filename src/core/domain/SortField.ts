@@ -1,4 +1,4 @@
-import { STATS, STATS_INFO } from "./stats";
+import { STATS, STATS_INFO } from "./Stat";
 
 export const SORT_FIELDS = ["default", ...STATS] as const;
 type SortFieldInfo = { shortName: string; label: string };
