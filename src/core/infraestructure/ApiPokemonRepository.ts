@@ -23,7 +23,6 @@ const REGIONS_RANGES: RegionRanges = {
 export class ApiPokemonRepository implements PokemonRepository {
   async listByRegion(region: Region): Promise<Pokemon[]> {
     const pokemon = await getPokemonList(region);
-    console.log(pokemon);
     return await Promise.all(
       pokemon.map(
         async (pokemon: PokemonListItem) => await getPokemonDetail(pokemon.url),
