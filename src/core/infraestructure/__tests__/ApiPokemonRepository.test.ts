@@ -1,7 +1,7 @@
 import { describe, expect } from "vitest";
 import { ApiPokemonRepository } from "../ApiPokemonRepository";
 
-describe.only("ApiPokemonRepository", () => {
+describe("ApiPokemonRepository", () => {
   it("should call pokeAPI correctly", async () => {
     const bulbasaur = {
       name: "bulbasaur",
