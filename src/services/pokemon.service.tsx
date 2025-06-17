@@ -1,4 +1,4 @@
-import { PokemonListItem, Pokemon } from "../types/pokemon";
+import { PokemonListItem, Pokemon } from "../core/domain/Pokemon";
 import { Range } from "../types/regions";
 
 const API_BASE_URL = "https://pokeapi.co/api/v2";

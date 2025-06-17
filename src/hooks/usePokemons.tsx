@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { DEFAULT_SORT } from "../types/constants";
-import { Pokemon } from "../types/pokemon";
+import { Pokemon } from "../core/domain/Pokemon";
 import { Region, REGIONS_RANGES } from "../types/regions";
 import { SortField } from "../types/sortFields";
 import { pokemonService } from "../services/pokemon.service";
