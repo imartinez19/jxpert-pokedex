@@ -43,7 +43,7 @@ export function usePokemons() {
         (filteredPokemons) =>
           filteredPokemons.name.includes(search.toLowerCase()) ||
           !!filteredPokemons.types.find((type) =>
-            type.type.name.startsWith(search.toLowerCase()),
+            type.startsWith(search.toLowerCase()),
           ),
       ),
     );
@@ -61,14 +61,10 @@ export function usePokemons() {
       });
     }
     return [...filteredPokemons].sort((firstPokemon, secondPokemon) => {
-      const firstPokemonStat = firstPokemon.stats.find(
-        (stat) => stat.stat.name === sortBy,
-      );
-      const secondPokemonStat = secondPokemon.stats.find(
-        (stat) => stat.stat.name === sortBy,
-      );
+      const firstPokemonStat = firstPokemon.stats[sortBy];
+      const secondPokemonStat = secondPokemon.stats[sortBy];
       return secondPokemonStat && firstPokemonStat
-        ? secondPokemonStat.base_stat - firstPokemonStat.base_stat
+        ? secondPokemonStat - firstPokemonStat
         : 0;
     });
   }

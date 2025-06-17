@@ -41,6 +41,21 @@ async function getPokemonList(
 }
 
 async function getPokemonDetail(url: string): Promise<Pokemon> {
-  const pokemon = await fetch(url);
-  return pokemon.json();
+  const pokemonDTO = await (await fetch(url)).json();
+  const pokemon: Pokemon = {
+    id: pokemonDTO.id,
+    name: pokemonDTO.name,
+    image: pokemonDTO.sprites.other["official-artwork"].front_default,
+    stats: {
+      Hp: pokemonDTO.stats[0].base_stat,
+      At: pokemonDTO.stats[1].base_stat,
+      Df: pokemonDTO.stats[2].base_stat,
+      SpA: pokemonDTO.stats[3].base_stat,
+      SpD: pokemonDTO.stats[4].base_stat,
+      Spd: pokemonDTO.stats[5].base_stat,
+    },
+    types: pokemonDTO.types.map((t: any) => t.type.name),
+  };
+
+  return pokemon;
 }
