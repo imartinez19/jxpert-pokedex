@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { describe, expect, test } from "vitest";
 import { App } from "../App";
-import * as PokemonService from "../core/service/PokemonService";
+import { pokemonService } from "../di";
 
 describe("Funcionalidad aplicación", () => {
   test("Debería llamarse correctamente a la API", async () => {
@@ -851,13 +851,10 @@ describe("Filtros y busqueda", () => {
 
 describe("TDD", () => {
   test("Debería mostrar el mensaje determinado cuando no se reciba una lista de pokemon", async () => {
-    const PokemonServiceMock = vi.fn();
-    PokemonServiceMock.prototype.listByRegion = vi
-      .fn()
-      .mockRejectedValue(new Error("Failed to fetch"));
-    vi.spyOn(PokemonService, "PokemonService").mockImplementation(
-      PokemonServiceMock,
+    vi.spyOn(pokemonService, "listByRegion").mockRejectedValue(
+      new Error("Failed to fetch"),
     );
+
     render(<App />);
 
     const mensajeError = await screen.findByText(

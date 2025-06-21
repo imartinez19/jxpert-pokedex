@@ -3,8 +3,7 @@ import { DEFAULT_SORT } from "../types/constants";
 import { Pokemon } from "../core/domain/Pokemon";
 import { Region } from "../core/domain/Region";
 import { SortField } from "../core/domain/SortField";
-import { PokemonService } from "../core/service/PokemonService";
-import { ApiPokemonRepository } from "../core/infraestructure/ApiPokemonRepository";
+import { pokemonService } from "../di";
 
 export function usePokemons() {
   const [filteredPokemons, setFilteredPokemons] = useState<Pokemon[]>([]);
@@ -17,9 +16,6 @@ export function usePokemons() {
   const [showRegions, setShowRegions] = useState<boolean>(false);
   const [showSortingMenu, setShowSortingMenu] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<SortField>("default");
-  const pokemonService: PokemonService = new PokemonService(
-    new ApiPokemonRepository(),
-  );
 
   useEffect(() => {
     setLoading(true);
@@ -68,7 +64,6 @@ export function usePokemons() {
         : 0;
     });
   }
-
   return {
     filteredPokemons,
     showListError,

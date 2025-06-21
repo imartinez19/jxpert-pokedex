@@ -2,6 +2,7 @@ import pokeball from "./assets/pokeball.svg";
 import { usePokemons } from "./hooks/usePokemons";
 import { SearchBar } from "./components/SearchBar";
 import { PokemonCards } from "./components/PokemonCards";
+import "./di";
 
 export const App = () => {
   const {
