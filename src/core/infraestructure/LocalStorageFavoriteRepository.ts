@@ -10,7 +10,6 @@ export class LocalStorageFavoriteRepository implements FavoriteRepository {
   async add(pokemon: Pokemon): Promise<void> {
     const pokemonFavs = await this.list();
     pokemonFavs.unshift(pokemon);
-    console.log(pokemonFavs);
     localStorage.setItem("pokemonFavs", JSON.stringify(pokemonFavs));
   }
 }
