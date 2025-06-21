@@ -851,11 +851,13 @@ describe("Filtros y busqueda", () => {
 
 describe("TDD", () => {
   test("Debería mostrar el mensaje determinado cuando no se reciba una lista de pokemon", async () => {
-    const SomeClass = vi.fn();
-    SomeClass.prototype.listByRegion = vi
+    const PokemonServiceMock = vi.fn();
+    PokemonServiceMock.prototype.listByRegion = vi
       .fn()
       .mockRejectedValue(new Error("Failed to fetch"));
-    vi.spyOn(PokemonService, "PokemonService").mockImplementation(SomeClass);
+    vi.spyOn(PokemonService, "PokemonService").mockImplementation(
+      PokemonServiceMock,
+    );
     render(<App />);
 
     const mensajeError = await screen.findByText(
