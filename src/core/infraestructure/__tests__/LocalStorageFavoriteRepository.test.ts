@@ -100,4 +100,16 @@ describe("LocalStorageFavoriteRepository", () => {
       JSON.stringify([bulbasur, pikachu, charmander]),
     );
   });
+
+  it("should not add a pokemon already in favorites", async () => {
+    mockLocalStorage.getItem = vi
+      .fn()
+      .mockReturnValue(JSON.stringify([pikachu, charmander]));
+    const localStorageFavoriteRepository = new LocalStorageFavoriteRepository();
+    const spy = vi.spyOn(mockLocalStorage, "setItem");
+
+    await localStorageFavoriteRepository.add(pikachu);
+
+    expect(spy).not.toHaveBeenCalled();
+  });
 });
